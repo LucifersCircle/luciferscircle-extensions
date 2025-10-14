@@ -39,6 +39,11 @@ jobs:
             echo "No bundles found — something went wrong with bundling."
           fi
 
+      - name: Add CNAME for GitHub Pages
+        run: |
+          echo "read.pirate.vodka" > bundles/CNAME
+          echo "CNAME file written to bundles/"
+
       - name: Deploy to GitHub Pages (root)
         uses: peaceiris/actions-gh-pages@v4
         with:
