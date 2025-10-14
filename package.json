@@ -1,7 +1,7 @@
 {
     "name": "general-extensions",
-    "repositoryName": "General Extensions (0.9)",
-    "description": "Paperback extensions for websites with unique, non-generic themes. Maintained by Inkdex.",
+    "repositoryName": "Extensions (0.9)",
+    "description": "Paperback extensions. Maintained by Lucifers Circle.",
     "private": true,
     "type": "module",
     "scripts": {
