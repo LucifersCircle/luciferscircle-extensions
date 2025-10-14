@@ -1,0 +1,34 @@
+{
+  "buildTime": "2025-10-14T19:41:14.088Z",
+  "builtWith": {
+    "toolchain": "1.0.0-alpha.53",
+    "types": "1.0.0-alpha.53"
+  },
+  "repository": {
+    "name": "General Extensions (0.9)",
+    "description": "Paperback extensions for websites with unique, non-generic themes. Maintained by Inkdex."
+  },
+  "sources": [
+    {
+      "name": "Scylla Comics",
+      "description": "Extension that pulls content from scyllacomics.xyz.",
+      "version": "1.0.0-alpha.2",
+      "icon": "icon.png",
+      "language": "en",
+      "contentRating": "ADULT",
+      "capabilities": [
+        16,
+        4,
+        1,
+        64
+      ],
+      "badges": [],
+      "developers": [
+        {
+          "name": "Lucifers Circle"
+        }
+      ],
+      "id": "ScyllaComics"
+    }
+  ]
+}
