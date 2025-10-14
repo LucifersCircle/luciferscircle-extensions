@@ -289,4 +289,4 @@ export class ScyllaComicsExtension implements ScyllaComicsImplementation {
         };
     }
 }
-export const ScyllaComics = new ScyllaComicsExtension();
+export default new ScyllaComicsExtension();
