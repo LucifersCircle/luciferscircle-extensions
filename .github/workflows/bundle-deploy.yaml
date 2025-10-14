@@ -27,14 +27,15 @@ jobs:
         run: |
           echo "=== Cleaning previous bundles and build cache ==="
           rm -rf src/bundles
+          rm -rf bundles
           rm -rf node_modules/.cache
           rm -rf ~/.cache/paperback-cli || true
 
-      - name: Bundle extensions from /src (force rebuild)
+      - name: Bundle extensions from /src
         run: |
-          echo "=== Bundling precompiled extensions from /src (forced rebuild) ==="
+          echo "=== Bundling precompiled extensions from /src ==="
           cd src
-          npm run bundle -- --force || npm run bundle
+          npm run bundle
           cd ..
 
       - name: Show bundle output
