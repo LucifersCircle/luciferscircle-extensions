@@ -27,7 +27,6 @@ jobs:
         run: |
           echo "=== Cleaning previous bundles and build cache ==="
           rm -rf src/bundles
-          rm -rf bundles
           rm -rf node_modules/.cache
           rm -rf ~/.cache/paperback-cli || true
 
@@ -40,23 +39,23 @@ jobs:
 
       - name: Show bundle output
         run: |
-          echo "=== Contents of /bundles ==="
-          if [ -d "bundles" ]; then
-            ls -R bundles
+          echo "=== Contents of /src/bundles ==="
+          if [ -d "src/bundles" ]; then
+            ls -R src/bundles
           else
             echo "No bundles found — something went wrong with bundling."
           fi
 
       - name: Add CNAME for GitHub Pages
         run: |
-          echo "read.pirate.vodka" > bundles/CNAME
-          echo "CNAME file written to bundles/"
+          echo "read.pirate.vodka" > src/bundles/CNAME
+          echo "CNAME file written to src/bundles/"
 
       - name: Deploy to GitHub Pages (root)
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: bundles
+          publish_dir: src/bundles
           destination_dir: .
           keep_files: false
           commit_message: "Deploy bundled extensions to gh-pages"
