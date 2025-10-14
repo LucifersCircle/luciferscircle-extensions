@@ -1,36 +1,36 @@
 name: Test
 
 on:
-  pull_request:
-  workflow_dispatch:
+    pull_request:
+    workflow_dispatch:
 
 concurrency:
-  group: ${{ github.ref }}-${{ github.workflow }}
-  cancel-in-progress: true
+    group: ${{ github.ref }}-${{ github.workflow }}
+    cancel-in-progress: true
 
 jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v4
+    test:
+        name: Test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Branch
+              uses: actions/checkout@v4
 
-      - name: Setup Node.js Environment
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
+            - name: Setup Node.js Environment
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: npm
 
-      - name: Install Dependencies
-        run: HUSKY=0 npm ci
+            - name: Install Dependencies
+              run: HUSKY=0 npm ci
 
-      # Run tests in an isolated temp dir so nothing touches your repo tree
-      - name: Run Tests (isolated)
-        run: |
-          echo "Running tests in a clean temp workspace"
-          TMPDIR=$(mktemp -d)
-          cp -r . "$TMPDIR"
-          cd "$TMPDIR"
-          npm test || exit 1
-          echo "Tests completed successfully"
+            # Run tests in an isolated temp dir so nothing touches your repo tree
+            - name: Run Tests (isolated)
+              run: |
+                  echo "Running tests in a clean temp workspace"
+                  TMPDIR=$(mktemp -d)
+                  cp -r . "$TMPDIR"
+                  cd "$TMPDIR"
+                  npm test || exit 1
+                  echo "Tests completed successfully"
