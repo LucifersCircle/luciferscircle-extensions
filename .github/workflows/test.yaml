@@ -21,7 +21,10 @@ jobs:
               with:
                   node-version: 22
                   cache: npm
-
+            - name: Clean runner cache
+              run: |
+                  npm cache clean --force
+                  rm -rf node_modules .tsbuildinfo dist src/bundles || true
             - name: Install Dependencies
               run: HUSKY=0 npm ci
 
