@@ -24,7 +24,7 @@ export class SearchProvider {
             .trim()
             .replace(/[’‘]/g, "'")
             .replace(/[“”]/g, '"')
-            .replace(/ /g, "+");
+            .replace(/ /g, "-");
 
         const baseUrl = new URL(QISCANS_API)
             .setQueryItem("perPage", PAGE_SIZE.toString())

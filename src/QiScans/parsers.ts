@@ -45,12 +45,23 @@ export function parseSearchResults(
     return (json.posts ?? []).map((post) => {
         const mangaId = sanitizeId(post.slug);
 
+        // debug: missing title cover images
+        console.log(`[QiScans] Search result: "${post.postTitle}"`);
+        console.log(`[QiScans] Image URL: ${post.featuredImage}`);
+
+        let imageUrl = post.featuredImage || "";
+        if (imageUrl.includes('/file/qiscans/')) {
+            const fixed = imageUrl.replace('/file/qiscans/', '/');
+            console.log(`[QiScans] Fixed cover image: ${imageUrl} -> ${fixed}`);
+            imageUrl = fixed;
+        }
+
         cachePostFromSearch(post, mangaId);
 
         return {
             mangaId: mangaId,
             title: Application.decodeHTMLEntities(post.postTitle),
-            imageUrl: post.featuredImage,
+            imageUrl: imageUrl,
             subtitle: `${post._count?.chapters ?? 0} Chapters`,
             contentRating: ContentRating.EVERYONE,
         };
@@ -73,9 +84,10 @@ export function parseMangaDetails(post: QIScansPost): SourceManga {
                       .filter((t) => t.length > 0)
                 : [],
 
-            thumbnailUrl:
-                post.featuredImage ||
-                "https://qiscans.org/wp-content/uploads/2023/05/qiscans-logo.png",
+            thumbnailUrl: (() => {
+                const url = post.featuredImage || "https://qiscans.org/wp-content/uploads/2023/05/qiscans-logo.png";
+                return url.replace('/file/qiscans/', '/');
+            })(),
 
             synopsis: Application.decodeHTMLEntities(
                 post.postContent.replace(/<[^>]+>/g, ""),
