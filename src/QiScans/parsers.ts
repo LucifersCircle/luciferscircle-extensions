@@ -135,14 +135,23 @@ export function parseChapterList(
         );
     });
 
-    return sorted.map((ch, index) => {
-        const isLocked = !!ch.isLocked;
-        const title = isLocked ? "(Locked)" : "";
+    const unlocked = sorted.filter((ch) => !ch.isLocked);
+
+    const lockedCount = sorted.length - unlocked.length;
+    if (lockedCount > 0) {
+        console.log(
+            `[QiScans] parseChapterList: filtered out ${lockedCount} locked chapters`,
+        );
+    }
+
+    return unlocked.map((ch, index) => {
+        //const isLocked = !!ch.isLocked;
+        //const title = isLocked ? "(Locked)" : "";
 
         return {
             chapterId: ch.slug,
             sourceManga,
-            title,
+            title: "",
             chapNum: ch.number,
             volume: 0,
             volumetitle: "",
