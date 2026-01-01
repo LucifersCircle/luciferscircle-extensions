@@ -2,7 +2,6 @@ import {
     BasicRateLimiter,
     CloudflareError,
     CookieStorageInterceptor,
-    DiscoverSectionType,
     type Chapter,
     type ChapterDetails,
     type ChapterProviding,
@@ -24,6 +23,7 @@ import {
 import { Metadata } from "./models";
 import { QiScansInterceptor } from "./network";
 import { ChapterProvider } from "./providers/ChapterProvider";
+import { DiscoverProvider } from "./providers/DiscoverProvider";
 import { MangaProvider } from "./providers/MangaProvider";
 import { SearchProvider } from "./providers/SearchProvider";
 
@@ -42,6 +42,7 @@ export class QiScansExtension implements QiScansImplementation {
     private searchProvider = new SearchProvider();
     private mangaProvider = new MangaProvider();
     private chapterProvider = new ChapterProvider(this.mangaProvider);
+    private discoverProvider = new DiscoverProvider();
     private cookieStorageInterceptor = new CookieStorageInterceptor({
         storage: "stateManager",
     });
@@ -101,21 +102,15 @@ export class QiScansExtension implements QiScansImplementation {
         return this.chapterProvider.getChapterDetails(chapter);
     }
 
-    // todo: implement later
     async getDiscoverSections(): Promise<DiscoverSection[]> {
-        return [
-            {
-                id: "latest",
-                title: "Latest Updates",
-                type: DiscoverSectionType.featured,
-            },
-        ];
+        return this.discoverProvider.getDiscoverSections();
     }
 
-    async getDiscoverSectionItems(): Promise<
-        PagedResults<DiscoverSectionItem>
-    > {
-        return { items: [], metadata: undefined };
+    async getDiscoverSectionItems(
+        section: DiscoverSection,
+        metadata: Metadata | undefined,
+    ): Promise<PagedResults<DiscoverSectionItem>> {
+        return this.discoverProvider.getDiscoverSectionItems(section, metadata);
     }
 
     async bypassCloudflareRequest(request: Request): Promise<Request> {

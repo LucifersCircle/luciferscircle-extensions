@@ -4,6 +4,10 @@ export interface QIScansQueryResponse {
     totalCount: number;
 }
 
+export interface QIScansV2Response {
+    data: QIScansPost[];
+}
+
 export interface QIScansPost {
     id: number;
     slug: string;

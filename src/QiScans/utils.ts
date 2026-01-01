@@ -2,7 +2,11 @@ import { Request } from "@paperback/types";
 import { checkCloudflareStatus } from "./network";
 
 export async function fetchJSON<T>(request: Request): Promise<T> {
+    console.log(`[QiScans] fetchJSON: Fetching ${request.url}`);
+
     const [response, buffer] = await Application.scheduleRequest(request);
+
+    console.log(`[QiScans] fetchJSON: Got response status ${response.status}`);
 
     checkCloudflareStatus(request, response.status);
 
@@ -13,9 +17,19 @@ export async function fetchJSON<T>(request: Request): Promise<T> {
     }
 
     const data = Application.arrayBufferToUTF8String(buffer);
+    console.log(`[QiScans] fetchJSON: Data length: ${data.length} chars`);
+    console.log(
+        `[QiScans] fetchJSON: First 200 chars: ${data.substring(0, 200)}`,
+    );
+
     try {
         const json: T =
             typeof data === "string" ? (JSON.parse(data) as T) : (data as T);
+
+        console.log(`[QiScans] fetchJSON: Successfully parsed JSON`);
+        console.log(`[QiScans] fetchJSON: JSON type: ${typeof json}`);
+        console.log(`[QiScans] fetchJSON: JSON is null: ${json === null}`);
+
         return json;
     } catch (error: unknown) {
         const reason = error instanceof Error ? error.message : String(error);
