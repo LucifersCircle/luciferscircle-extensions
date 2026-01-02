@@ -3,7 +3,7 @@ import { ContentRating, SourceInfo, SourceIntents } from "@paperback/types";
 export default {
     name: "QiScans",
     description: "Extension that pulls content from qiscans.org.",
-    version: "1.0.0-alpha.9",
+    version: "1.0.0-alpha.10",
     icon: "icon.png",
     language: "en",
     contentRating: ContentRating.EVERYONE,
