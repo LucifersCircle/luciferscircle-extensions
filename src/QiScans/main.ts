@@ -23,7 +23,7 @@ import { ChapterProvider } from "./implementations/chapter-providing/main";
 import { DiscoverProvider } from "./implementations/discover-section/main";
 import { MangaProvider } from "./implementations/manga/main";
 import { SearchProvider } from "./implementations/search-results/main";
-import { Metadata } from "./implementations/shared/models";
+import { type Metadata } from "./implementations/shared/models";
 import { QiScansInterceptor } from "./services/interceptor";
 
 export const QISCANS_DOMAIN = "https://qiscans.org";

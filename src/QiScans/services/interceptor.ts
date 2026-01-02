@@ -1,4 +1,8 @@
-import { PaperbackInterceptor, Request, Response } from "@paperback/types";
+import {
+    PaperbackInterceptor,
+    type Request,
+    type Response,
+} from "@paperback/types";
 import { QISCANS_DOMAIN } from "../main";
 
 export class QiScansInterceptor extends PaperbackInterceptor {
