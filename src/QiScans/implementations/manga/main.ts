@@ -1,9 +1,13 @@
 import { Request, SourceManga, URL } from "@paperback/types";
-import { QISCANS_API, QISCANS_API_BASE } from "../main"; // api.qiscans.org/api/query
-
-import { QIScansPost, QIScansQueryResponse, sanitizeId } from "../models";
-import { getCachedPostById, parseMangaDetails } from "../parsers";
-import { fetchJSON } from "../utils";
+import { QISCANS_API, QISCANS_API_BASE } from "../../main";
+import {
+    QIScansPost,
+    QIScansQueryResponse,
+    sanitizeId,
+} from "../shared/models";
+import { getCachedPostById } from "../shared/parsers";
+import { fetchJSON } from "../shared/utils";
+import { parseMangaDetails } from "./parsers";
 
 export class MangaProvider {
     async getMangaDetails(mangaId: string): Promise<SourceManga> {

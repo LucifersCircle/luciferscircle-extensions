@@ -1,5 +1,5 @@
 import { Request } from "@paperback/types";
-import { checkCloudflareStatus } from "./network";
+import { checkCloudflareStatus } from "../../services/requests";
 
 export async function fetchJSON<T>(request: Request): Promise<T> {
     console.log(`[QiScans] fetchJSON: Fetching ${request.url}`);

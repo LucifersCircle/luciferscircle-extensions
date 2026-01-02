@@ -5,10 +5,10 @@ import {
     PagedResults,
     Request,
 } from "@paperback/types";
-import { QISCANS_API_BASE } from "../main";
-import { Metadata, QIScansV2Response } from "../models";
-import { parseDiscoverItems } from "../parsers";
-import { fetchJSON } from "../utils";
+import { QISCANS_API_BASE } from "../../main";
+import { Metadata, QIScansV2Response } from "../shared/models";
+import { fetchJSON } from "../shared/utils";
+import { parseDiscoverItems } from "./parsers";
 
 export class DiscoverProvider {
     async getDiscoverSections(): Promise<DiscoverSection[]> {

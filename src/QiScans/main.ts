@@ -1,6 +1,5 @@
 import {
     BasicRateLimiter,
-    CloudflareError,
     CookieStorageInterceptor,
     type Chapter,
     type ChapterDetails,
@@ -20,12 +19,12 @@ import {
     type SearchResultsProviding,
     type SourceManga,
 } from "@paperback/types";
-import { Metadata } from "./models";
-import { QiScansInterceptor } from "./network";
-import { ChapterProvider } from "./providers/ChapterProvider";
-import { DiscoverProvider } from "./providers/DiscoverProvider";
-import { MangaProvider } from "./providers/MangaProvider";
-import { SearchProvider } from "./providers/SearchProvider";
+import { ChapterProvider } from "./implementations/chapter-providing/main";
+import { DiscoverProvider } from "./implementations/discover-section/main";
+import { MangaProvider } from "./implementations/manga/main";
+import { SearchProvider } from "./implementations/search-results/main";
+import { Metadata } from "./implementations/shared/models";
+import { QiScansInterceptor } from "./services/interceptor";
 
 export const QISCANS_DOMAIN = "https://qiscans.org";
 export const QISCANS_API = "https://api.qiscans.org/api/query";
@@ -68,13 +67,6 @@ export class QiScansExtension implements QiScansImplementation {
             ) {
                 this.cookieStorageInterceptor.setCookie(cookie);
             }
-        }
-    }
-
-    // todo: remove duplicate
-    private checkCloudflareStatus(status: number): void {
-        if (status === 503 || status === 403) {
-            throw new CloudflareError({ url: QISCANS_DOMAIN, method: "GET" });
         }
     }
 

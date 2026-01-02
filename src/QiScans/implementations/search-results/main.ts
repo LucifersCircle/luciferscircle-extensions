@@ -5,10 +5,10 @@ import {
     SearchResultItem,
     URL,
 } from "@paperback/types";
-import { QISCANS_API } from "../main";
-import { Metadata, QIScansQueryResponse } from "../models";
-import { parseSearchResults } from "../parsers";
-import { fetchJSON } from "../utils";
+import { QISCANS_API } from "../../main";
+import { Metadata, QIScansQueryResponse } from "../shared/models";
+import { fetchJSON } from "../shared/utils";
+import { parseSearchResults } from "./parsers";
 
 const PAGE_SIZE = 20;
 

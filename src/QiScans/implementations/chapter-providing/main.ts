@@ -5,11 +5,11 @@ import {
     SourceManga,
     URL,
 } from "@paperback/types";
-import { QISCANS_API_BASE, QISCANS_DOMAIN } from "../main";
-import { QIScansChaptersResponse } from "../models";
-import { parseChapterDetails, parseChapterList } from "../parsers";
-import { fetchJSON, fetchText } from "../utils";
-import { MangaProvider } from "./MangaProvider";
+import { QISCANS_API_BASE, QISCANS_DOMAIN } from "../../main";
+import { MangaProvider } from "../manga/main";
+import { QIScansChaptersResponse } from "../shared/models";
+import { fetchJSON, fetchText } from "../shared/utils";
+import { parseChapterDetails, parseChapterList } from "./parsers";
 
 export class ChapterProvider {
     private mangaProvider: MangaProvider;
