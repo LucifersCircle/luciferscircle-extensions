@@ -1,4 +1,3 @@
-// todo: clean up interfaces
 export interface QIScansQueryResponse {
     posts: QIScansPost[];
     totalCount: number;
@@ -59,42 +58,7 @@ export interface QIScansChaptersResponse {
     totalChapterCount: number;
 }
 
-export interface QIScansImage {
-    id: number;
-    height: number;
-    width: number;
-    url: string;
-    order: number;
-}
-
-export interface QIScansChapterImagesPayload {
-    id?: number;
-    images?: QIScansImage[];
-    pages?: (string | { url: string })[];
-}
-
-export interface QIScansChapterPagesResponse {
-    images?: QIScansImage[];
-    pages?: (string | { url: string })[];
-    chapter?: QIScansChapterImagesPayload;
-}
-
 export type Metadata = {
     page?: number;
     completed?: boolean;
 };
-
-export function sanitizeId(id: string): string {
-    const sanitized = id
-        .replace(/[^a-zA-Z0-9._\-@()[\]%?#+=/&:]/g, "-")
-        .replace(/-+/g, "-")
-        .replace(/^-|-$/g, "");
-
-    if (!sanitized) {
-        throw new Error(
-            `[QiScans] sanitizeId: cannot derive valid identifier from "${id}"`,
-        );
-    }
-
-    return sanitized;
-}

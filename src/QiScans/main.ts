@@ -77,7 +77,6 @@ export class QiScansExtension implements QiScansImplementation {
     async getSearchResults(
         query: SearchQuery,
         metadata: Metadata,
-        //sortingOption: unknown,
     ): Promise<PagedResults<SearchResultItem>> {
         return this.searchProvider.getSearchResults(query, metadata);
     }

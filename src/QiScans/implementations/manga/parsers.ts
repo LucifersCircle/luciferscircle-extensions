@@ -1,12 +1,12 @@
 import { ContentRating, SourceManga } from "@paperback/types";
-import { QIScansPost, sanitizeId } from "../shared/models";
+import { QIScansPost } from "../shared/models";
 
 export function parseMangaDetails(post: QIScansPost): SourceManga {
     const author = post.author?.trim();
     const artist = post.artist?.trim();
 
     return {
-        mangaId: sanitizeId(post.slug),
+        mangaId: post.id.toString(),
         mangaInfo: {
             primaryTitle: Application.decodeHTMLEntities(post.postTitle),
 

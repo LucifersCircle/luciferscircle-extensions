@@ -4,6 +4,7 @@ import {
     DiscoverSectionType,
     PagedResults,
     Request,
+    URL,
 } from "@paperback/types";
 import { QISCANS_API_BASE } from "../../main";
 import { Metadata, QIScansV2Response } from "../shared/models";
@@ -52,37 +53,51 @@ export class DiscoverProvider {
     ): Promise<PagedResults<DiscoverSectionItem>> {
         const page = metadata?.page ?? 1;
         let perPage = 15;
-        let skipItems = 0; // they dont give an api for some carousel items, getting creative instead of parsing html selectors
-        let url: string;
+        let skipItems = 0;
+
+        const urlBuilder = new URL(QISCANS_API_BASE)
+            .addPathComponent("v2")
+            .addPathComponent("posts")
+            .setQueryItem("perPage", perPage.toString())
+            .setQueryItem("page", page.toString());
 
         switch (section.id) {
             case "featured":
-                // show last 15
                 perPage = 25;
                 skipItems = 10;
-                url = `${QISCANS_API_BASE}/v2/posts?featured=true&perPage=${perPage}&page=${page}`;
+                urlBuilder
+                    .setQueryItem("featured", "true")
+                    .setQueryItem("perPage", perPage.toString());
                 break;
 
             case "popular":
-                url = `${QISCANS_API_BASE}/v2/posts?sortBy=totalViews&sortOrder=desc&perPage=${perPage}&page=${page}`;
+                urlBuilder
+                    .setQueryItem("sortBy", "totalViews")
+                    .setQueryItem("sortOrder", "desc");
                 break;
 
             case "pinned":
-                url = `${QISCANS_API_BASE}/v2/posts?pinned=true&perPage=${perPage}&page=${page}`;
+                urlBuilder.setQueryItem("pinned", "true");
                 break;
 
             case "latest":
-                url = `${QISCANS_API_BASE}/v2/posts?sortBy=lastChapterAddedAt&sortOrder=desc&perPage=${perPage}&page=${page}`;
+                urlBuilder
+                    .setQueryItem("sortBy", "lastChapterAddedAt")
+                    .setQueryItem("sortOrder", "desc");
                 break;
 
             case "editors-pick":
                 perPage = 40;
                 skipItems = 25;
-                url = `${QISCANS_API_BASE}/v2/posts?editorsPick=true&perPage=${perPage}&page=${page}`;
+                urlBuilder
+                    .setQueryItem("editorsPick", "true")
+                    .setQueryItem("perPage", perPage.toString());
                 break;
 
             case "new":
-                url = `${QISCANS_API_BASE}/v2/posts?sortBy=createdAt&sortOrder=desc&perPage=${perPage}&page=${page}`;
+                urlBuilder
+                    .setQueryItem("sortBy", "createdAt")
+                    .setQueryItem("sortOrder", "desc");
                 break;
 
             default:
@@ -91,41 +106,22 @@ export class DiscoverProvider {
                 );
         }
 
-        console.log(
-            `[QiScans] Fetching discover section "${section.id}" page ${page}: ${url}`,
-        );
+        const url = urlBuilder.toString();
+        const request: Request = { url, method: "GET" };
+        const json = await fetchJSON<QIScansV2Response>(request);
 
-        try {
-            const request: Request = {
-                url,
-                method: "GET",
-            };
+        let items = parseDiscoverItems(json, section.id);
 
-            const json = await fetchJSON<QIScansV2Response>(request);
-            let items = parseDiscoverItems(json, section.id);
-
-            if (skipItems > 0 && items.length > skipItems) {
-                console.log(
-                    `[QiScans] Skipping first ${skipItems} items for "${section.id}"`,
-                );
-                items = items.slice(skipItems);
-            }
-
-            // only "pinned" and "latest" sections support pagination
-            const canPaginate =
-                section.id === "pinned" || section.id === "latest";
-            const hasMore = canPaginate && items.length >= 15;
-
-            return {
-                items,
-                metadata: hasMore ? { page: page + 1 } : undefined,
-            };
-        } catch (error) {
-            console.error(
-                `[QiScans] Error in getDiscoverSectionItems for "${section.id}":`,
-                error,
-            );
-            throw error;
+        if (skipItems > 0 && items.length > skipItems) {
+            items = items.slice(skipItems);
         }
+
+        const canPaginate = section.id === "pinned" || section.id === "latest";
+        const hasMore = canPaginate && items.length >= 15;
+
+        return {
+            items,
+            metadata: hasMore ? { page: page + 1 } : undefined,
+        };
     }
 }

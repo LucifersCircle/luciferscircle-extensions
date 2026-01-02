@@ -1,25 +1,16 @@
 import { ContentRating, SearchResultItem } from "@paperback/types";
-import { QIScansQueryResponse, sanitizeId } from "../shared/models";
-import { cachePostFromSearch } from "../shared/parsers";
+import { QIScansQueryResponse } from "../shared/models";
 
 export function parseSearchResults(
     json: QIScansQueryResponse,
 ): SearchResultItem[] {
     return (json.posts ?? []).map((post) => {
-        const mangaId = sanitizeId(post.slug);
-
-        // debug: missing title cover images
-        console.log(`[QiScans] Search result: "${post.postTitle}"`);
-        console.log(`[QiScans] Image URL: ${post.featuredImage}`);
+        const mangaId = post.id.toString();
 
         let imageUrl = post.featuredImage || "";
         if (imageUrl.includes("/file/qiscans/")) {
-            const fixed = imageUrl.replace("/file/qiscans/", "/");
-            console.log(`[QiScans] Fixed cover image: ${imageUrl} -> ${fixed}`);
-            imageUrl = fixed;
+            imageUrl = imageUrl.replace("/file/qiscans/", "/");
         }
-
-        cachePostFromSearch(post, mangaId);
 
         return {
             mangaId: mangaId,
