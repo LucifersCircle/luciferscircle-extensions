@@ -1,5 +1,5 @@
 import { Request, SourceManga, URL } from "@paperback/types";
-import { QISCANS_API } from "../main"; // api.qiscans.org/api/query
+import { QISCANS_API, QISCANS_API_BASE } from "../main"; // api.qiscans.org/api/query
 
 import { QIScansPost, QIScansQueryResponse, sanitizeId } from "../models";
 import { getCachedPostById, parseMangaDetails } from "../parsers";
@@ -10,12 +10,47 @@ export class MangaProvider {
         // use cached post from search
         const cached = getCachedPostById(mangaId);
         if (cached) {
+            console.log(`[QiScans] MangaProvider: cached.id = ${cached.id}`);
+            console.log(
+                `[QiScans] MangaProvider: cached.genres = ${JSON.stringify(cached.genres)}`,
+            );
+            console.log(
+                `[QiScans] MangaProvider: genres length = ${cached.genres?.length ?? "undefined"}`,
+            );
+
+            // if cached post has no genres but has an ID, fetch by ID to get full data
+            if ((!cached.genres || cached.genres.length === 0) && cached.id) {
+                console.log(
+                    `[QiScans] MangaProvider: cached post for "${mangaId}" has no genres, fetching by ID ${cached.id}`,
+                );
+
+                try {
+                    const url = `${QISCANS_API_BASE}/v2/posts/${cached.id}`;
+                    const request: Request = { url, method: "GET" };
+                    const json = await fetchJSON<QIScansPost>(request);
+
+                    if (json) {
+                        console.log(
+                            `[QiScans] MangaProvider: fetched full data by ID ${cached.id}`,
+                        );
+                        return parseMangaDetails(json);
+                    }
+                } catch (error) {
+                    const errorMsg =
+                        error instanceof Error ? error.message : String(error);
+                    console.log(
+                        `[QiScans] MangaProvider: failed to fetch by ID, using cached data: ${errorMsg}`,
+                    );
+                    // fallback to cached data if fetch fails
+                    return parseMangaDetails(cached);
+                }
+            }
+
             console.log(
                 `[QiScans] MangaProvider: using cached post for mangaId="${mangaId}" (slug="${cached.slug}")`,
             );
             return parseMangaDetails(cached);
         }
-
         // fallback path, mangaId is already sanitizeId(post.slug). Can only approximate
         // todo: fix this fallback, may not need +
         const slugApprox = mangaId;
@@ -31,8 +66,8 @@ export class MangaProvider {
         }
 
         const searchTerm = encodeURIComponent(rawSearchTerm)
-            .replace(/%20/g, "+")
-            .replace(/%2B/g, "+");
+            .replace(/%20/g, "-")
+            .replace(/%2B/g, "-");
 
         const baseUrl = new URL(QISCANS_API)
             .setQueryItem("perPage", "20")
