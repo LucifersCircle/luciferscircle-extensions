@@ -24,7 +24,6 @@ export class SearchProvider {
             .trim()
             .replace(/[’‘]/g, "'")
             .replace(/[“”]/g, '"')
-            .replace(/ /g, "-");
 
         const baseUrl = new URL(QISCANS_API)
             .setQueryItem("perPage", PAGE_SIZE.toString())
@@ -57,6 +56,7 @@ export class SearchProvider {
             hasNext = consumed < extendedJson.total;
         } else {
             // fallback: probe next page with a 1-item fetch
+            // todo: fix fallback
             try {
                 const probeUrl = new URL(QISCANS_API)
                     .setQueryItem("perPage", "1")
