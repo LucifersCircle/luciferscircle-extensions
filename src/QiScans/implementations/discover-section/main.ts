@@ -1,11 +1,10 @@
-import {
-    DiscoverSectionType,
-    URL,
-    type DiscoverSection,
-    type DiscoverSectionItem,
-    type PagedResults,
-    type Request,
+import type {
+    DiscoverSection,
+    DiscoverSectionItem,
+    PagedResults,
+    Request,
 } from "@paperback/types";
+import { DiscoverSectionType, URL } from "@paperback/types";
 import { QISCANS_API_BASE } from "../../main";
 import { type Metadata, type QIScansV2Response } from "../shared/models";
 import { fetchJSON } from "../shared/utils";

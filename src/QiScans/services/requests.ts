@@ -1,4 +1,5 @@
-import { CloudflareError, type Request } from "@paperback/types";
+import type { Request } from "@paperback/types";
+import { CloudflareError } from "@paperback/types";
 
 export function checkCloudflareStatus(request: Request, status: number): void {
     if (status === 503) {

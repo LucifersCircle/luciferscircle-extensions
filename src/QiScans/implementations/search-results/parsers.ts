@@ -1,5 +1,6 @@
-import { ContentRating, type SearchResultItem } from "@paperback/types";
-import { type QIScansQueryResponse } from "../shared/models";
+import type { SearchResultItem } from "@paperback/types";
+import { ContentRating } from "@paperback/types";
+import type { QIScansQueryResponse } from "../shared/models";
 
 export function parseSearchResults(
     json: QIScansQueryResponse,

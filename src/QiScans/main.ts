@@ -1,29 +1,28 @@
-import {
-    BasicRateLimiter,
-    CookieStorageInterceptor,
-    type Chapter,
-    type ChapterDetails,
-    type ChapterProviding,
-    type CloudflareBypassRequestProviding,
-    type Cookie,
-    type DiscoverSection,
-    type DiscoverSectionItem,
-    type DiscoverSectionProviding,
-    type Extension,
-    type MangaProviding,
-    type PagedResults,
-    type Request,
-    type SearchFilter,
-    type SearchQuery,
-    type SearchResultItem,
-    type SearchResultsProviding,
-    type SourceManga,
+import type {
+    Chapter,
+    ChapterDetails,
+    ChapterProviding,
+    CloudflareBypassRequestProviding,
+    Cookie,
+    DiscoverSection,
+    DiscoverSectionItem,
+    DiscoverSectionProviding,
+    Extension,
+    MangaProviding,
+    PagedResults,
+    Request,
+    SearchFilter,
+    SearchQuery,
+    SearchResultItem,
+    SearchResultsProviding,
+    SourceManga,
 } from "@paperback/types";
+import { BasicRateLimiter, CookieStorageInterceptor } from "@paperback/types";
 import { ChapterProvider } from "./implementations/chapter-providing/main";
 import { DiscoverProvider } from "./implementations/discover-section/main";
 import { MangaProvider } from "./implementations/manga/main";
 import { SearchProvider } from "./implementations/search-results/main";
-import { type Metadata } from "./implementations/shared/models";
+import type { Metadata } from "./implementations/shared/models";
 import { QiScansInterceptor } from "./services/interceptor";
 
 export const QISCANS_DOMAIN = "https://qiscans.org";

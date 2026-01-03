@@ -1,12 +1,12 @@
-import {
-    URL,
-    type PagedResults,
-    type Request,
-    type SearchQuery,
-    type SearchResultItem,
+import type {
+    PagedResults,
+    Request,
+    SearchQuery,
+    SearchResultItem,
 } from "@paperback/types";
+import { URL } from "@paperback/types";
 import { QISCANS_API } from "../../main";
-import { type Metadata, type QIScansQueryResponse } from "../shared/models";
+import type { Metadata, QIScansQueryResponse } from "../shared/models";
 import { fetchJSON } from "../shared/utils";
 import { parseSearchResults } from "./parsers";
 

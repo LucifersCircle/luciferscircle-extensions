@@ -1,9 +1,5 @@
-import {
-    type Chapter,
-    type ChapterDetails,
-    type SourceManga,
-} from "@paperback/types";
-import { type QIScansChaptersResponse } from "../shared/models";
+import type { Chapter, ChapterDetails, SourceManga } from "@paperback/types";
+import type { QIScansChaptersResponse } from "../shared/models";
 
 export function parseChapterList(
     json: QIScansChaptersResponse,

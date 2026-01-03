@@ -1,6 +1,6 @@
-import { type Request, type SourceManga } from "@paperback/types";
+import type { Request, SourceManga } from "@paperback/types";
 import { QISCANS_API_BASE } from "../../main";
-import { type QIScansPost } from "../shared/models";
+import type { QIScansPost } from "../shared/models";
 import { fetchJSON } from "../shared/utils";
 import { parseMangaDetails } from "./parsers";
 

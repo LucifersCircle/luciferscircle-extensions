@@ -1,13 +1,13 @@
-import {
-    URL,
-    type Chapter,
-    type ChapterDetails,
-    type Request,
-    type SourceManga,
+import type {
+    Chapter,
+    ChapterDetails,
+    Request,
+    SourceManga,
 } from "@paperback/types";
+import { URL } from "@paperback/types";
 import { QISCANS_API_BASE, QISCANS_DOMAIN } from "../../main";
-import { type MangaProvider } from "../manga/main";
-import { type QIScansChaptersResponse } from "../shared/models";
+import type { MangaProvider } from "../manga/main";
+import type { QIScansChaptersResponse } from "../shared/models";
 import { fetchJSON, fetchText } from "../shared/utils";
 import { parseChapterDetails, parseChapterList } from "./parsers";
 

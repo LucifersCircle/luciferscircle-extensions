@@ -1,5 +1,5 @@
-import { type DiscoverSectionItem } from "@paperback/types";
-import { type QIScansV2Response } from "../shared/models";
+import type { DiscoverSectionItem } from "@paperback/types";
+import type { QIScansV2Response } from "../shared/models";
 
 export function parseDiscoverItems(
     json: QIScansV2Response,

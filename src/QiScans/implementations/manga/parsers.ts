@@ -1,5 +1,6 @@
-import { ContentRating, type SourceManga } from "@paperback/types";
-import { type QIScansPost } from "../shared/models";
+import type { SourceManga } from "@paperback/types";
+import { ContentRating } from "@paperback/types";
+import type { QIScansPost } from "../shared/models";
 
 export function parseMangaDetails(post: QIScansPost): SourceManga {
     const author = post.author?.trim();
