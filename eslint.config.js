@@ -1,34 +1,36 @@
-import eslint from "@eslint/js";
-import tseslint from "typescript-eslint";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
+import { defineConfig } from "eslint/config";
 
-export default tseslint.config(
+export default defineConfig([
     {
-        extends: [eslint.configs.recommended],
-        files: ["**/*{.js,.ts}"],
+        files: ["**/*.ts"],
+        languageOptions: {
+            parser: tsParser,
+            parserOptions: {
+                project: "./tsconfig.json",
+                tsconfigRootDir: new URL(".", import.meta.url).pathname,
+                sourceType: "module",
+                ecmaVersion: "latest",
+            },
+        },
+        plugins: { "@typescript-eslint": tsPlugin },
+        rules: {
+            "@typescript-eslint/no-unused-vars": [
+                "error",
+                { varsIgnorePattern: "^_" },
+            ],
+            "@typescript-eslint/require-await": "off",
+        },
+    },
+    {
+        files: ["**/*.js"],
         languageOptions: {
             ecmaVersion: "latest",
             sourceType: "module",
         },
     },
     {
-        extends: [...tseslint.configs.recommendedTypeChecked],
-        files: ["**/*.ts"],
-        languageOptions: {
-            parser: tseslint.parser,
-            parserOptions: {
-                projectService: true,
-                tsconfigRootDir: import.meta.dirname,
-            },
-        },
-        rules: {
-            "@typescript-eslint/require-await": "off",
-            "@typescript-eslint/no-unused-vars": [
-                "error",
-                { varsIgnorePattern: "^_" },
-            ],
-        },
-    },
-    {
         ignores: ["bundles"],
     },
-);
+]);
