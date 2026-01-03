@@ -56,10 +56,7 @@ export class SearchProvider {
             typeof genreFilter.value === "object" &&
             !Array.isArray(genreFilter.value)
         ) {
-            const genreValue = genreFilter.value as Record<
-                string,
-                "included" | "excluded"
-            >;
+            const genreValue = genreFilter.value;
             const selectedGenres = Object.keys(genreValue).filter(
                 (key) => genreValue[key] === "included",
             );
