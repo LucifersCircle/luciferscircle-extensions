@@ -1,4 +1,5 @@
-import { ContentRating, SourceInfo, SourceIntents } from "@paperback/types";
+import type { ExtensionInfo } from "@paperback/types";
+import { ContentRating, SourceIntents } from "@paperback/types";
 
 export default {
     name: "QiScans",
@@ -8,10 +9,10 @@ export default {
     language: "en",
     contentRating: ContentRating.EVERYONE,
     capabilities: [
-        SourceIntents.CLOUDFLARE_BYPASS_REQUIRED,
-        SourceIntents.DISCOVER_SECIONS,
-        SourceIntents.MANGA_CHAPTERS,
-        SourceIntents.MANGA_SEARCH,
+        SourceIntents.CLOUDFLARE_BYPASS_PROVIDING,
+        SourceIntents.DISCOVER_SECIONS_PROVIDING,
+        SourceIntents.CHAPTER_PROVIDING,
+        SourceIntents.SEARCH_RESULTS_PROVIDING,
     ],
     badges: [],
     developers: [
@@ -19,4 +20,4 @@ export default {
             name: "Lucifers Circle",
         },
     ],
-} satisfies SourceInfo;
+} satisfies ExtensionInfo;
