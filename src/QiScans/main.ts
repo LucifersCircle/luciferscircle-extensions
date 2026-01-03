@@ -15,6 +15,7 @@ import type {
     SearchQuery,
     SearchResultItem,
     SearchResultsProviding,
+    SortingOption,
     SourceManga,
 } from "@paperback/types";
 import { BasicRateLimiter, CookieStorageInterceptor } from "@paperback/types";
@@ -70,14 +71,23 @@ export class QiScansExtension implements QiScansImplementation {
     }
 
     async getSearchFilters(): Promise<SearchFilter[]> {
-        return [];
+        return this.searchProvider.getSearchFilters();
+    }
+
+    async getSortingOptions(): Promise<SortingOption[]> {
+        return this.searchProvider.getSortingOptions();
     }
 
     async getSearchResults(
         query: SearchQuery,
         metadata: Metadata,
+        sortingOption?: SortingOption,
     ): Promise<PagedResults<SearchResultItem>> {
-        return this.searchProvider.getSearchResults(query, metadata);
+        return this.searchProvider.getSearchResults(
+            query,
+            metadata,
+            sortingOption,
+        );
     }
 
     async getMangaDetails(mangaId: string): Promise<SourceManga> {

@@ -16,7 +16,10 @@ export function parseDiscoverItems(
             if (!post.postTitle || post.postTitle.trim().length === 0) {
                 return false;
             }
-            if (post.postTitle.startsWith('http://') || post.postTitle.startsWith('https://')) {
+            if (
+                post.postTitle.startsWith("http://") ||
+                post.postTitle.startsWith("https://")
+            ) {
                 return false;
             }
             return true;
