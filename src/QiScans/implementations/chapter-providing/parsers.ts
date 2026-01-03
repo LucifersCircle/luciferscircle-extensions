@@ -41,7 +41,7 @@ export function parseChapterDetails(
 ): ChapterDetails {
     // match image URLs in the uploads/series path
     const pageRegex =
-        /https?:\/\/[^"'\\]*?\/uploads?\/series\/[^"'\\]+?\.(?:webp|jpe?g|png)/gi;
+        /https?:\/\/[^"'\\]*?\/(uploads?|rezo)\/series\/[^"'\\]+?\.(?:webp|jpe?g|png)/gi;
 
     const rawMatches = html.match(pageRegex) ?? [];
 
