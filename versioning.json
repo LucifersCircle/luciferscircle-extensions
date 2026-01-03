@@ -1,12 +1,12 @@
 {
-  "buildTime": "2026-01-03T08:23:59.496Z",
+  "buildTime": "2026-01-03T10:10:34.836Z",
   "builtWith": {
     "toolchain": "1.0.0-alpha.57",
     "types": "1.0.0-alpha.57"
   },
   "repository": {
-    "name": "Extensions (0.9)",
-    "description": "Paperback extensions. Maintained by Lucifers Circle."
+    "name": "General Extensions (0.9)",
+    "description": "Paperback extensions for websites with unique, non-generic themes. Maintained by Inkdex."
   },
   "sources": [
     {
