@@ -7,8 +7,12 @@ import type {
     SortingOption,
 } from "@paperback/types";
 import { URL } from "@paperback/types";
-import { QISCANS_API } from "../../main";
-import type { Metadata, QIScansQueryResponse } from "../shared/models";
+import { QISCANS_API, QISCANS_API_BASE } from "../../main";
+import type {
+    Metadata,
+    QIScansGenre,
+    QIScansQueryResponse,
+} from "../shared/models";
 import { fetchJSON } from "../shared/utils";
 import { parseSearchResults } from "./parsers";
 
@@ -36,18 +40,40 @@ export class SearchProvider {
             urlBuilder = urlBuilder.setQueryItem("searchTerm", searchTerm);
         }
 
-        // get sort from filter
-        const sortFilter = query.filters?.find((f) => f.id === "sort");
-        const sortBy = (sortFilter?.value as string) || "createdAt";
-        urlBuilder = urlBuilder.setQueryItem("orderBy", sortBy);
-
-        // get status from sorting option
-        if (sortingOption?.id) {
+        // get status
+        const statusFilter = query.filters?.find((f) => f.id === "status");
+        if (statusFilter?.value) {
             urlBuilder = urlBuilder.setQueryItem(
                 "seriesStatus",
-                sortingOption.id,
+                statusFilter.value as string,
             );
         }
+
+        // get genres
+        const genreFilter = query.filters?.find((f) => f.id === "genres");
+        if (
+            genreFilter?.value &&
+            typeof genreFilter.value === "object" &&
+            !Array.isArray(genreFilter.value)
+        ) {
+            const genreValue = genreFilter.value as Record<
+                string,
+                "included" | "excluded"
+            >;
+            const selectedGenres = Object.keys(genreValue).filter(
+                (key) => genreValue[key] === "included",
+            );
+            if (selectedGenres.length > 0) {
+                urlBuilder = urlBuilder.setQueryItem(
+                    "genreIds",
+                    selectedGenres.join(","),
+                );
+            }
+        }
+
+        // get sort
+        const sortBy = sortingOption?.id ?? "createdAt";
+        urlBuilder = urlBuilder.setQueryItem("orderBy", sortBy);
 
         const url = urlBuilder.toString();
         const request: Request = { url, method: "GET" };
@@ -77,29 +103,68 @@ export class SearchProvider {
     }
 
     async getSearchFilters(): Promise<SearchFilter[]> {
-        const sortFilter: SearchFilter = {
+        const statusFilter: SearchFilter = {
             type: "dropdown",
-            id: "sort",
-            title: "Sort By",
+            id: "status",
+            title: "Status",
             options: [
-                { id: "createdAt", value: "Created At" },
-                { id: "updatedAt", value: "Updated At" },
-                { id: "totalViews", value: "Views" },
-                { id: "postTitle", value: "Title" },
+                { id: "", value: "All" },
+                { id: "ONGOING", value: "Ongoing" },
+                { id: "HIATUS", value: "Hiatus" },
+                { id: "DROPPED", value: "Dropped" },
+                { id: "COMPLETED", value: "Completed" },
             ],
-            value: "createdAt",
+            value: "",
         };
 
-        return [sortFilter];
+        // fetch and cache genres
+        const genresCacheDate = Number(
+            Application.getState("genres-cache-date") ?? 0,
+        );
+        let genres: QIScansGenre[];
+
+        if (genresCacheDate + 604800 > Date.now() / 1000) {
+            // cache valid for 1 week
+            genres = JSON.parse(
+                Application.getState("genres") as string,
+            ) as QIScansGenre[];
+        } else {
+            const url = `${QISCANS_API_BASE}/genres`;
+            const request: Request = { url, method: "GET" };
+            genres = await fetchJSON<QIScansGenre[]>(request);
+
+            Application.setState(JSON.stringify(genres), "genres");
+            Application.setState(
+                String(Date.now() / 1000),
+                "genres-cache-date",
+            );
+        }
+
+        const genreFilter: SearchFilter = {
+            type: "multiselect",
+            id: "genres",
+            title: "Genres",
+            options: genres
+                .filter((g) => g.name !== "hidden")
+                .map((g) => ({
+                    id: g.id.toString(),
+                    value: g.name,
+                })),
+            value: {},
+            allowExclusion: false,
+            allowEmptySelection: true,
+            maximum: undefined,
+        };
+
+        return [statusFilter, genreFilter];
     }
 
     async getSortingOptions(): Promise<SortingOption[]> {
         return [
-            { id: "", label: "All" },
-            { id: "ONGOING", label: "Ongoing" },
-            { id: "HIATUS", label: "Hiatus" },
-            { id: "DROPPED", label: "Dropped" },
-            { id: "COMPLETED", label: "Completed" },
+            { id: "createdAt", label: "Created At" },
+            { id: "updatedAt", label: "Updated At" },
+            { id: "totalViews", label: "Views" },
+            { id: "postTitle", label: "Title" },
         ];
     }
 }
