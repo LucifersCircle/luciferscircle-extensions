@@ -83,8 +83,7 @@ export function parseChapterDetails(
         );
     }
 
-    // fix /file/qiscans/ in URLs
-    const pages = bestList.map((url) => url.replace("/file/qiscans/", "/"));
+    const pages = bestList;
 
     return {
         id: chapter.chapterId,

@@ -7,13 +7,13 @@ import type {
     SortingOption,
 } from "@paperback/types";
 import { URL } from "@paperback/types";
-import { QISCANS_API, QISCANS_API_BASE } from "../../main";
+import { QISCANS_API_BASE } from "../../main";
+import { fetchJSON } from "../../services/network";
 import type {
     Metadata,
     QIScansGenre,
     QIScansQueryResponse,
 } from "../shared/models";
-import { fetchJSON } from "../shared/utils";
 import { parseSearchResults } from "./parsers";
 
 const PAGE_SIZE = 20;
@@ -32,7 +32,8 @@ export class SearchProvider {
             .replace(/[\u201C\u201D]/g, '"')
             .replace(/\s+/g, " ");
 
-        let urlBuilder = new URL(QISCANS_API)
+        let urlBuilder = new URL(QISCANS_API_BASE)
+            .addPathComponent("query")
             .setQueryItem("perPage", PAGE_SIZE.toString())
             .setQueryItem("page", page.toString());
 
