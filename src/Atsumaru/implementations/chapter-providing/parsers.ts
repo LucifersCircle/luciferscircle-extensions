@@ -7,8 +7,8 @@ export function parseChapterList(
 ): Chapter[] {
     return json.chapters.map((ch) => {
         // look for chapter/episode
-        const episodeMatch = ch.title.match(/Episode\s+(\d+)/i);
-        const chapterMatch = ch.title.match(/Ch(?:apter)?\.?\s+(\d+)/i);
+        const episodeMatch = ch.title.match(/Episode\s+([\d.]+)/i);
+        const chapterMatch = ch.title.match(/Ch(?:apter)?\.?\s+([\d.]+)/i);
         const chapterNumber = episodeMatch?.[1]
             ? parseFloat(episodeMatch[1])
             : chapterMatch?.[1]
