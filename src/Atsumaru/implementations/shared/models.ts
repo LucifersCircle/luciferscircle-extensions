@@ -124,3 +124,9 @@ export interface AtsuAvailableFiltersResponse {
     types: Array<{ id: string; name: string }>;
     statuses: Array<{ id: string; name: string }>;
 }
+
+export interface ExtractedFilters {
+    includedTags: string[];
+    excludedTags: string[];
+    selectedTypes: string[];
+}

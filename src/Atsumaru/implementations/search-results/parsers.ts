@@ -1,11 +1,6 @@
 // todo: remove interfaces
 import type { SearchQuery } from "@paperback/types";
-
-export interface ExtractedFilters {
-    includedTags: string[];
-    excludedTags: string[];
-    selectedTypes: string[];
-}
+import type { ExtractedFilters } from "../shared/models";
 
 export function extractSearchFilters(query: SearchQuery): ExtractedFilters {
     const includedTags: string[] = [];

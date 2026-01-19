@@ -92,6 +92,15 @@ export class SearchProvider {
                 return Object.keys(f.value).length > 0;
             });
 
+        // use default viewDetails when no search query is provided
+        if (
+            !searchTerm &&
+            !hasFilters &&
+            (!sortingOption || sortingOption.id === "none")
+        ) {
+            return this.getDefaultBrowseResults(page);
+        }
+
         // if filters OR status sort is used, use filteredView
         if (hasFilters || (sortingOption && sortingOption.id !== "none")) {
             // double-check page is a number before calling
@@ -135,6 +144,57 @@ export class SearchProvider {
         return {
             items,
             metadata: hasMore ? { page: page + 1 } : undefined,
+        };
+    }
+
+    private async getDefaultBrowseResults(
+        page: number,
+    ): Promise<PagedResults<SearchResultItem>> {
+        const safePage = typeof page === "number" && !isNaN(page) ? page : 0;
+
+        const requestBody: AtsuFilteredViewRequest = {
+            filter: {
+                search: "",
+                tags: [],
+                excludeTags: [],
+                types: [],
+                status: [],
+                years: [],
+                minChapters: null,
+                hideBookmarked: false,
+                officialTranslation: false,
+                showAdult: false,
+                sortBy: "popularity",
+            },
+            page: safePage,
+        };
+
+        const url = new URL(ATSUMARU_API_BASE)
+            .addPathComponent("explore")
+            .addPathComponent("filteredView")
+            .toString();
+
+        const request: Request = {
+            url,
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestBody),
+        };
+
+        const json = await fetchJSON<AtsuFilteredViewResponse>(request);
+
+        const items: SearchResultItem[] = json.items.map((item) => ({
+            mangaId: item.id,
+            title: item.title,
+            imageUrl: `${ATSUMARU_DOMAIN}/static/${item.image}`,
+            subtitle: item.type,
+            contentRating: ContentRating.EVERYONE,
+        }));
+
+        return {
+            items,
+            metadata:
+                items.length >= PAGE_SIZE ? { page: safePage + 1 } : undefined,
         };
     }
 
