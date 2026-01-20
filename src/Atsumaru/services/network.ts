@@ -39,7 +39,7 @@ export async function fetchJSON<T>(request: Request): Promise<T> {
 
     if (response.status !== 200) {
         throw new Error(
-            `[QiScans] Request failed with status ${response.status}: ${request.url}`,
+            `Request failed with status ${response.status}: ${request.url}`,
         );
     }
 
@@ -50,7 +50,7 @@ export async function fetchJSON<T>(request: Request): Promise<T> {
     } catch (error: unknown) {
         const reason = error instanceof Error ? error.message : String(error);
         throw new Error(
-            `[QiScans] Failed to parse JSON from ${request.url}: ${reason}`,
+            `Failed to parse JSON from ${request.url}: ${reason}`,
         );
     }
 }
@@ -62,7 +62,7 @@ export async function fetchText(request: Request): Promise<string> {
 
     if (response.status !== 200) {
         throw new Error(
-            `[QiScans] Request failed with status ${response.status}: ${request.url}`,
+            `Request failed with status ${response.status}: ${request.url}`,
         );
     }
 

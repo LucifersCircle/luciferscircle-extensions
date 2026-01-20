@@ -1,4 +1,3 @@
-// todo: remove interfaces
 import type { SearchQuery } from "@paperback/types";
 import type { ExtractedFilters } from "../shared/models";
 

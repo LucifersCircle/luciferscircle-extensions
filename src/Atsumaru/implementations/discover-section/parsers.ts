@@ -1,6 +1,6 @@
-// todo: use atsu_base
 import type { DiscoverSection, DiscoverSectionItem } from "@paperback/types";
 import { DiscoverSectionType } from "@paperback/types";
+import { ATSUMARU_DOMAIN } from "../../main";
 import type { AtsuHomePageResponse } from "../shared/models";
 
 export function parseDiscoverSections(
@@ -8,7 +8,7 @@ export function parseDiscoverSections(
 ): DiscoverSection[] {
     const sections = json.homePage.sections;
 
-    // filter for carousel sections only and map to DiscoverSection
+    // filter for carousel sections only and map
     return sections
         .filter(
             (section) =>
@@ -34,12 +34,11 @@ export function parseDiscoverItems(
         return [];
     }
 
-    // map items to DiscoverSectionItem format
     return section.items.map((item) => ({
         type: "simpleCarouselItem" as const,
         mangaId: item.id,
         title: item.title,
-        imageUrl: `https://atsu.moe/static/${item.image}`,
-        subtitle: item.type, // shows "Manwha", "Manga", etc.
+        imageUrl: `${ATSUMARU_DOMAIN}/static/${item.image}`,
+        subtitle: item.type,
     }));
 }

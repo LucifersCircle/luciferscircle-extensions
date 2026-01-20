@@ -1,4 +1,3 @@
-// todo: use atsu_base
 import type {
     Chapter,
     ChapterDetails,
@@ -6,7 +5,7 @@ import type {
     SourceManga,
 } from "@paperback/types";
 import { URL } from "@paperback/types";
-import { ATSUMARU_API_BASE } from "../../main";
+import { ATSUMARU_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import type {
     AtsuChaptersResponse,
@@ -23,7 +22,8 @@ export class ChapterProvider {
 
         // fetch all pages
         while (currentPage < totalPages) {
-            const url = new URL(ATSUMARU_API_BASE)
+            const url = new URL(ATSUMARU_DOMAIN)
+                .addPathComponent("api")
                 .addPathComponent("manga")
                 .addPathComponent("chapters")
                 .setQueryItem("id", mangaId)
@@ -47,7 +47,8 @@ export class ChapterProvider {
         const mangaId = chapter.sourceManga.mangaId;
         const chapterId = chapter.chapterId;
 
-        const url = new URL(ATSUMARU_API_BASE)
+        const url = new URL(ATSUMARU_DOMAIN)
+            .addPathComponent("api")
             .addPathComponent("read")
             .addPathComponent("chapter")
             .setQueryItem("mangaId", mangaId)
@@ -59,7 +60,7 @@ export class ChapterProvider {
 
         const pages = json.readChapter.pages
             .sort((a, b) => a.number - b.number)
-            .map((page) => `https://atsu.moe${page.image}`);
+            .map((page) => `${ATSUMARU_DOMAIN}${page.image}`);
 
         return {
             id: chapterId,

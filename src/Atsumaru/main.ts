@@ -8,7 +8,6 @@ import { applyMixins } from "./implementations/shared/utils";
 import { QiScansInterceptor } from "./services/network";
 
 export const ATSUMARU_DOMAIN = "https://atsu.moe";
-export const ATSUMARU_API_BASE = "https://atsu.moe/api";
 
 export interface AtsumaruImplementation
     extends SearchProvider, MangaProvider, ChapterProvider, DiscoverProvider {}

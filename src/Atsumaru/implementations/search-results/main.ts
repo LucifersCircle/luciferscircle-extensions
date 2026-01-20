@@ -1,5 +1,3 @@
-// todo: remove old page hacks for serialization errors
-
 import type {
     PagedResults,
     Request,
@@ -9,7 +7,7 @@ import type {
     SortingOption,
 } from "@paperback/types";
 import { ContentRating, URL } from "@paperback/types";
-import { ATSUMARU_API_BASE, ATSUMARU_DOMAIN } from "../../main";
+import { ATSUMARU_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import type {
     AtsuAvailableFiltersResponse,
@@ -23,7 +21,8 @@ const PAGE_SIZE = 20;
 
 export class SearchProvider {
     async getSearchFilters(): Promise<SearchFilter[]> {
-        const url = new URL(ATSUMARU_API_BASE)
+        const url = new URL(ATSUMARU_DOMAIN)
+            .addPathComponent("api")
             .addPathComponent("explore")
             .addPathComponent("availableFilters")
             .toString();
@@ -92,7 +91,7 @@ export class SearchProvider {
                 return Object.keys(f.value).length > 0;
             });
 
-        // use default viewDetails when no search query is provided
+        // use default filteredView when no search query is provided
         if (
             !searchTerm &&
             !hasFilters &&
@@ -103,13 +102,13 @@ export class SearchProvider {
 
         // if filters OR status sort is used, use filteredView
         if (hasFilters || (sortingOption && sortingOption.id !== "none")) {
-            // double-check page is a number before calling
+            // double-check page is a number, keeps serializing as string
             const safePage =
                 typeof page === "number" && !isNaN(page) ? page : 0;
             return this.getFilteredResults(query, safePage, sortingOption);
         }
 
-        // use TypeSense search for text-only queries
+        // use fast search api for text-only queries
         if (!searchTerm) {
             return { items: [], metadata: undefined };
         }
@@ -169,7 +168,8 @@ export class SearchProvider {
             page: safePage,
         };
 
-        const url = new URL(ATSUMARU_API_BASE)
+        const url = new URL(ATSUMARU_DOMAIN)
+            .addPathComponent("api")
             .addPathComponent("explore")
             .addPathComponent("filteredView")
             .toString();
@@ -203,7 +203,7 @@ export class SearchProvider {
         page: number,
         sortingOption?: SortingOption,
     ): Promise<PagedResults<SearchResultItem>> {
-        // runtime safety check - force page to be a valid number
+        // force page to be a valid number, in case it's a string again
         const safePage = typeof page === "number" && !isNaN(page) ? page : 0;
 
         const filters = extractSearchFilters(query);
@@ -231,7 +231,8 @@ export class SearchProvider {
             page: safePage,
         };
 
-        const url = new URL(ATSUMARU_API_BASE)
+        const url = new URL(ATSUMARU_DOMAIN)
+            .addPathComponent("api")
             .addPathComponent("explore")
             .addPathComponent("filteredView")
             .toString();
@@ -240,7 +241,7 @@ export class SearchProvider {
             url,
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(requestBody), // explicitly stringify instead of passing object (the real fix)
+            body: JSON.stringify(requestBody), // stringify instead of passing object, should fix serialization
         };
 
         const json = await fetchJSON<AtsuFilteredViewResponse>(request);

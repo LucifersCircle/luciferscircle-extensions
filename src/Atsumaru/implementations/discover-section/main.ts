@@ -1,4 +1,3 @@
-// todo: use atsu base
 import type {
     DiscoverSection,
     DiscoverSectionItem,
@@ -6,7 +5,7 @@ import type {
     Request,
 } from "@paperback/types";
 import { URL } from "@paperback/types";
-import { ATSUMARU_API_BASE } from "../../main";
+import { ATSUMARU_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import type {
     AtsuHomePageResponse,
@@ -16,7 +15,8 @@ import { parseDiscoverItems, parseDiscoverSections } from "./parsers";
 
 export class DiscoverProvider {
     async getDiscoverSections(): Promise<DiscoverSection[]> {
-        const url = new URL(ATSUMARU_API_BASE)
+        const url = new URL(ATSUMARU_DOMAIN)
+            .addPathComponent("api")
             .addPathComponent("home")
             .addPathComponent("page")
             .toString();
@@ -31,9 +31,10 @@ export class DiscoverProvider {
         section: DiscoverSection,
         metadata?: { page?: number },
     ): Promise<PagedResults<DiscoverSectionItem>> {
-        // special case: top-rated uses home page data (no pagination)
+        // top-rated uses home page, no pagination
         if (section.id === "top-rated") {
-            const url = new URL(ATSUMARU_API_BASE)
+            const url = new URL(ATSUMARU_DOMAIN)
+                .addPathComponent("api")
                 .addPathComponent("home")
                 .addPathComponent("page")
                 .toString();
@@ -58,10 +59,11 @@ export class DiscoverProvider {
 
         const endpoint = endpointMap[section.id];
         if (!endpoint) {
-            throw new Error(`[Atsumaru] Unknown section: ${section.id}`);
+            throw new Error(`Unknown section: ${section.id}`);
         }
 
-        const url = new URL(ATSUMARU_API_BASE)
+        const url = new URL(ATSUMARU_DOMAIN)
+            .addPathComponent("api")
             .addPathComponent("infinite")
             .addPathComponent(endpoint)
             .setQueryItem("page", page.toString())
@@ -75,7 +77,7 @@ export class DiscoverProvider {
             type: "simpleCarouselItem" as const,
             mangaId: item.id,
             title: item.title,
-            imageUrl: `https://atsu.moe/static/${item.image}`,
+            imageUrl: `${ATSUMARU_DOMAIN}/static/${item.image}`,
             subtitle: item.type,
         }));
 
