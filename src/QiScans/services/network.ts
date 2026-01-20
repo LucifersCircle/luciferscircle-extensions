@@ -1,11 +1,11 @@
 import type { Request, Response } from "@paperback/types";
 import { CloudflareError, PaperbackInterceptor } from "@paperback/types";
-import { ATSUMARU_DOMAIN } from "../main";
+import { QISCANS_DOMAIN } from "../main";
 
 export class QiScansInterceptor extends PaperbackInterceptor {
     async interceptRequest(request: Request): Promise<Request> {
         request.headers = request.headers ?? {};
-        request.headers.referer = `${ATSUMARU_DOMAIN}/`;
+        request.headers.referer = `${QISCANS_DOMAIN}/`;
         return request;
     }
 
@@ -39,7 +39,7 @@ export async function fetchJSON<T>(request: Request): Promise<T> {
 
     if (response.status !== 200) {
         throw new Error(
-            `Request failed with status ${response.status}: ${request.url}`,
+            `[QiScans] Request failed with status ${response.status}: ${request.url}`,
         );
     }
 
@@ -49,7 +49,9 @@ export async function fetchJSON<T>(request: Request): Promise<T> {
         return typeof data === "string" ? (JSON.parse(data) as T) : (data as T);
     } catch (error: unknown) {
         const reason = error instanceof Error ? error.message : String(error);
-        throw new Error(`Failed to parse JSON from ${request.url}: ${reason}`);
+        throw new Error(
+            `[QiScans] Failed to parse JSON from ${request.url}: ${reason}`,
+        );
     }
 }
 
@@ -60,10 +62,24 @@ export async function fetchText(request: Request): Promise<string> {
 
     if (response.status !== 200) {
         throw new Error(
-            `Request failed with status ${response.status}: ${request.url}`,
+            `[QiScans] Request failed with status ${response.status}: ${request.url}`,
         );
     }
 
     const data = Application.arrayBufferToUTF8String(buffer);
     return typeof data === "string" ? data : String(data);
+}
+
+export async function fetchImage(request: Request): Promise<ArrayBuffer> {
+    const [response, buffer] = await Application.scheduleRequest(request);
+
+    checkCloudflareStatus(request, response.status);
+
+    if (response.status !== 200) {
+        throw new Error(
+            `[QiScans] Request failed with status ${response.status}: ${request.url}`,
+        );
+    }
+
+    return buffer;
 }
