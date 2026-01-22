@@ -1,0 +1,69 @@
+import type { Chapter, ChapterDetails, SourceManga } from "@paperback/types";
+import type {
+    WeebDexChapter,
+    WeebDexChapterFeedResponse,
+} from "../shared/models";
+
+export function parseChapterList(
+    json: WeebDexChapterFeedResponse,
+    sourceManga: SourceManga,
+): Chapter[] {
+    const chapters = json.data ?? [];
+
+    if (chapters.length === 0) {
+        return [];
+    }
+
+    return chapters
+        .filter((ch) => !ch.is_unavailable)
+        .map((ch) => {
+            const chapterNum = ch.chapter ? parseFloat(ch.chapter) : 0;
+            const volumeNum = ch.volume ? parseFloat(ch.volume) : 0;
+            const groupName = ch.relationships?.groups?.[0]?.name || "No Group";
+            const language = ch.language?.toUpperCase() || "EN";
+
+            // Don't show language for "No Group"
+            const versionName =
+                groupName === "No Group"
+                    ? groupName
+                    : `[${language}] ${groupName}`;
+
+            return {
+                chapterId: ch.id,
+                sourceManga,
+                title: ch.title || "",
+                chapNum: chapterNum,
+                volume: volumeNum,
+                langCode: "", //ch.language || "en", // Commented out until Paperback shows it in version picker
+                version: versionName, // Language prefix
+                sortingIndex: 0,
+                publishDate: new Date(ch.published_at || ch.created_at),
+            };
+        });
+}
+
+export function parseChapterDetails(
+    chapter: WeebDexChapter,
+    chapterObj: Chapter,
+): ChapterDetails {
+    const node = chapter.node || "https://api.weebdex.org";
+    const chapterId = chapter.id;
+
+    // Use data_optimized if available, otherwise fall back to data
+    const pageData = chapter.data_optimized || chapter.data || [];
+
+    // Build image URLs
+    const pages = pageData.map(
+        (page) => `${node}/data/${chapterId}/${page.name}`,
+    );
+
+    if (pages.length === 0) {
+        throw new Error("No pages found for this chapter");
+    }
+
+    return {
+        id: chapterId,
+        mangaId: chapterObj.sourceManga.mangaId,
+        pages: pages,
+    };
+}

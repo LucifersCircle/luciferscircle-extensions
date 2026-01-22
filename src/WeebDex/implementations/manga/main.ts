@@ -1,0 +1,19 @@
+import type { Request, SourceManga } from "@paperback/types";
+import { URL } from "@paperback/types";
+import { fetchJSON } from "../../services/network";
+import type { WeebDexManga } from "../shared/models";
+import { parseMangaDetails } from "./parsers";
+
+export class MangaProvider {
+    async getMangaDetails(mangaId: string): Promise<SourceManga> {
+        const url = new URL("https://api.weebdex.org")
+            .addPathComponent("manga")
+            .addPathComponent(mangaId)
+            .toString();
+
+        const request: Request = { url, method: "GET" };
+        const json = await fetchJSON<WeebDexManga>(request);
+
+        return parseMangaDetails(json, mangaId);
+    }
+}
