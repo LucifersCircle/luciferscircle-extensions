@@ -40,16 +40,17 @@ export class ChapterProvider {
             currentPage++;
         }
 
-        // Sort chapters by volume and chapter number (descending)
+        // Sort chapters by volume and chapter number (ASCENDING - oldest first)
         allChapters.sort((a, b) => {
-            // First sort by volume (descending)
             const volA = a.volume ?? 0;
             const volB = b.volume ?? 0;
-            if (a.volume !== b.volume) {
-                return volB - volA;
+
+            // First sort by volume (ascending)
+            if (volA !== volB) {
+                return volA - volB;
             }
-            // Then by chapter number (descending)
-            return b.chapNum - a.chapNum;
+            // Then by chapter number (ascending)
+            return a.chapNum - b.chapNum;
         });
 
         // Update sortingIndex after sorting
