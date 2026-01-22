@@ -53,7 +53,7 @@ export class ChapterProvider {
             return a.chapNum - b.chapNum;
         });
 
-        // Update sortingIndex after sorting
+        // update sortingIndex after sorting
         allChapters.forEach((ch, index) => {
             ch.sortingIndex = index;
         });
