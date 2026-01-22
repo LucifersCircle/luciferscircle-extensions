@@ -2,7 +2,7 @@ import type { ExtensionInfo } from "@paperback/types";
 import { ContentRating, SourceIntents } from "@paperback/types";
 
 export default {
-    name: "Weebdex",
+    name: "WeebDex",
     description: "Extension that pulls content from weebdex.org.",
     version: "1.0.0-alpha.1",
     icon: "icon.png",
