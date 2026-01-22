@@ -1,5 +1,5 @@
 {
-  "buildTime": "2026-01-22T03:34:27.338Z",
+  "buildTime": "2026-01-22T09:06:12.252Z",
   "builtWith": {
     "toolchain": "1.0.0-alpha.57",
     "types": "1.0.0-alpha.57"
@@ -10,7 +10,7 @@
   },
   "sources": [
     {
-      "name": "Weebdex",
+      "name": "WeebDex",
       "description": "Extension that pulls content from weebdex.org.",
       "version": "1.0.0-alpha.1",
       "icon": "icon.png",
