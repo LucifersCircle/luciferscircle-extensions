@@ -49,8 +49,9 @@ export class ChapterProvider {
               );
 
         // Update sortingIndex after filtering
+        const maxIndex = filteredChapters.length - 1;
         filteredChapters.forEach((ch, index) => {
-            ch.sortingIndex = index;
+            ch.sortingIndex = maxIndex - index;
         });
 
         return filteredChapters;
