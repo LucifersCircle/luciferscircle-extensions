@@ -5,13 +5,13 @@ import type {
     SourceManga,
 } from "@paperback/types";
 import { URL } from "@paperback/types";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import type {
     WeebDexChapter,
     WeebDexChapterFeedResponse,
 } from "../shared/models";
 import { parseChapterDetails, parseChapterList } from "./parsers";
-import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class ChapterProvider {
     async getChapters(sourceManga: SourceManga): Promise<Chapter[]> {

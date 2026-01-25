@@ -1,9 +1,9 @@
 import type { Request, SourceManga } from "@paperback/types";
 import { URL } from "@paperback/types";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import type { WeebDexManga } from "../shared/models";
 import { parseMangaDetails } from "./parsers";
-import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class MangaProvider {
     async getMangaDetails(mangaId: string): Promise<SourceManga> {

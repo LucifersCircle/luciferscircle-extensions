@@ -7,6 +7,7 @@ import type {
     SortingOption,
 } from "@paperback/types";
 import { URL } from "@paperback/types";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import type {
     Metadata,
@@ -14,7 +15,6 @@ import type {
     WeebDexTagListResponse,
 } from "../shared/models";
 import { extractSearchFilters, parseSearchResults } from "./parsers";
-import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class SearchProvider {
     async getSearchFilters(): Promise<SearchFilter[]> {

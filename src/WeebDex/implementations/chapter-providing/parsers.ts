@@ -1,9 +1,9 @@
 import type { Chapter, ChapterDetails, SourceManga } from "@paperback/types";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 import type {
     WeebDexChapter,
     WeebDexChapterFeedResponse,
 } from "../shared/models";
-import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export function parseChapterList(
     json: WeebDexChapterFeedResponse,
@@ -22,13 +22,6 @@ export function parseChapterList(
             const chapterNum = ch.chapter ? parseFloat(ch.chapter) : 0;
             const volumeNum = ch.volume ? parseFloat(ch.volume) : 0;
             const groupName = ch.relationships?.groups?.[0]?.name || "No Group";
-            const language = ch.language?.toUpperCase() || "EN";
-
-            // Don't show language for "No Group"
-            const versionName =
-                groupName === "No Group"
-                    ? groupName
-                    : `[${language}] ${groupName}`;
 
             return {
                 chapterId: ch.id,
@@ -36,8 +29,8 @@ export function parseChapterList(
                 title: ch.title || "",
                 chapNum: chapterNum,
                 volume: volumeNum,
-                langCode: "", //ch.language || "en", // Commented out until Paperback shows it in version picker
-                version: versionName, // Language prefix
+                langCode: ch.language || "en",
+                version: groupName,
                 sortingIndex: startIndex + index,
                 publishDate: new Date(ch.published_at || ch.created_at),
             };

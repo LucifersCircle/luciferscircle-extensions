@@ -1,7 +1,10 @@
 import type { SearchQuery, SearchResultItem } from "@paperback/types";
 import { ContentRating } from "@paperback/types";
-import type { ExtractedFilters, WeebDexMangaListResponse } from "../shared/models";
 import { WEEBDEX_COVER_DOMAIN } from "../../main";
+import type {
+    ExtractedFilters,
+    WeebDexMangaListResponse,
+} from "../shared/models";
 
 export function extractSearchFilters(query: SearchQuery): ExtractedFilters {
     const status: string[] = [];

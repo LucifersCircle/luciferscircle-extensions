@@ -5,6 +5,7 @@ import type {
     Request,
 } from "@paperback/types";
 import { DiscoverSectionType, URL } from "@paperback/types";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import {
     type Metadata,
@@ -12,7 +13,6 @@ import {
     type WeebDexMangaListResponse,
 } from "../shared/models";
 import { parseDiscoverItems, parseLatestUpdates } from "./parsers";
-import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class DiscoverProvider {
     async getDiscoverSections(): Promise<DiscoverSection[]> {

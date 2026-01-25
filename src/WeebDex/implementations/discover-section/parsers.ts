@@ -1,9 +1,9 @@
 import type { DiscoverSectionItem } from "@paperback/types";
+import { WEEBDEX_COVER_DOMAIN } from "../../main";
 import type {
     WeebDexChapterFeedResponse,
     WeebDexMangaListResponse,
 } from "../shared/models";
-import { WEEBDEX_COVER_DOMAIN } from "../../main";
 
 export function parseDiscoverItems(
     json: WeebDexMangaListResponse,
