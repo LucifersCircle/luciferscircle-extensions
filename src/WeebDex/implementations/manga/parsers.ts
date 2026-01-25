@@ -1,8 +1,7 @@
 import type { MangaInfo, SourceManga } from "@paperback/types";
 import { ContentRating } from "@paperback/types";
 import type { WeebDexManga } from "../shared/models";
-
-const COVER_DOMAIN = "https://srv.weebdex.net";
+import { WEEBDEX_DOMAIN, WEEBDEX_COVER_DOMAIN } from "../../main";
 
 export function parseMangaDetails(
     manga: WeebDexManga,
@@ -13,7 +12,7 @@ export function parseMangaDetails(
     let coverUrl = "";
     if (cover?.id && cover?.ext) {
         const ext = cover.ext.startsWith(".") ? cover.ext.slice(1) : cover.ext;
-        coverUrl = `${COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
+        coverUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
     }
 
     // Extract authors
@@ -98,6 +97,7 @@ export function parseMangaDetails(
         synopsis: manga.description || "No description available.",
         contentRating: contentRating,
         tagGroups: tagGroups,
+        shareUrl: `${WEEBDEX_DOMAIN}/title/${mangaId}`,
     };
 
     return {

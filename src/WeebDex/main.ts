@@ -11,6 +11,8 @@ import { applyMixins } from "./implementations/shared/utils";
 import { WeebInterceptor } from "./services/network";
 
 export const WEEBDEX_DOMAIN = "https://weebdex.org";
+export const WEEBDEX_API_DOMAIN = "https://api.weebdex.org";
+export const WEEBDEX_COVER_DOMAIN = "https://srv.weebdex.net";
 
 export interface WeebDexImplementation
     extends SearchProvider, MangaProvider, ChapterProvider, DiscoverProvider {}
