@@ -8,6 +8,7 @@ import { WEEBDEX_API_DOMAIN } from "../../main";
 export function parseChapterList(
     json: WeebDexChapterFeedResponse,
     sourceManga: SourceManga,
+    startIndex: number = 0,
 ): Chapter[] {
     const chapters = json.data ?? [];
 
@@ -17,7 +18,7 @@ export function parseChapterList(
 
     return chapters
         .filter((ch) => !ch.is_unavailable)
-        .map((ch) => {
+        .map((ch, index) => {
             const chapterNum = ch.chapter ? parseFloat(ch.chapter) : 0;
             const volumeNum = ch.volume ? parseFloat(ch.volume) : 0;
             const groupName = ch.relationships?.groups?.[0]?.name || "No Group";
@@ -37,7 +38,7 @@ export function parseChapterList(
                 volume: volumeNum,
                 langCode: "", //ch.language || "en", // Commented out until Paperback shows it in version picker
                 version: versionName, // Language prefix
-                sortingIndex: 0,
+                sortingIndex: startIndex + index,
                 publishDate: new Date(ch.published_at || ch.created_at),
             };
         });
