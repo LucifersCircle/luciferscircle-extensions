@@ -116,3 +116,12 @@ export interface WeebDexTagListResponse {
     page: number;
     data: WeebDexTag[];
 }
+
+export interface ExtractedFilters {
+    status: string[];
+    demographic: string[];
+    contentRating: string[];
+    includedTags: string[];
+    excludedTags: string[];
+    tagMode: string;
+}

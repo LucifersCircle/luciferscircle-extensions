@@ -12,6 +12,7 @@ import {
     type WeebDexMangaListResponse,
 } from "../shared/models";
 import { parseDiscoverItems, parseLatestUpdates } from "./parsers";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class DiscoverProvider {
     async getDiscoverSections(): Promise<DiscoverSection[]> {
@@ -51,7 +52,7 @@ export class DiscoverProvider {
             return this.getLatestUpdates(page, limit);
         }
 
-        const urlBuilder = new URL("https://api.weebdex.org")
+        const urlBuilder = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("manga")
             .addPathComponent("top")
             .setQueryItem("limit", limit.toString())
@@ -100,7 +101,7 @@ export class DiscoverProvider {
         page: number,
         limit: number,
     ): Promise<PagedResults<DiscoverSectionItem>> {
-        const url = new URL("https://api.weebdex.org")
+        const url = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("chapter")
             .addPathComponent("updates") // Changed from "feed" to "updates"
             .setQueryItem("limit", limit.toString())

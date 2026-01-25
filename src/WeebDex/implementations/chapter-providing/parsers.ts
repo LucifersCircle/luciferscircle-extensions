@@ -3,6 +3,7 @@ import type {
     WeebDexChapter,
     WeebDexChapterFeedResponse,
 } from "../shared/models";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export function parseChapterList(
     json: WeebDexChapterFeedResponse,
@@ -46,7 +47,7 @@ export function parseChapterDetails(
     chapter: WeebDexChapter,
     chapterObj: Chapter,
 ): ChapterDetails {
-    const node = chapter.node || "https://api.weebdex.org";
+    const node = chapter.node || WEEBDEX_API_DOMAIN;
     const chapterId = chapter.id;
 
     // Use data_optimized if available, otherwise fall back to data

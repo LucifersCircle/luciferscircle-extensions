@@ -3,8 +3,7 @@ import type {
     WeebDexChapterFeedResponse,
     WeebDexMangaListResponse,
 } from "../shared/models";
-
-const COVER_DOMAIN = "https://srv.weebdex.net";
+import { WEEBDEX_COVER_DOMAIN } from "../../main";
 
 export function parseDiscoverItems(
     json: WeebDexMangaListResponse,
@@ -27,7 +26,7 @@ export function parseDiscoverItems(
                 const ext = cover.ext.startsWith(".")
                     ? cover.ext.slice(1)
                     : cover.ext;
-                imageUrl = `${COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
+                imageUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
             }
 
             return {
@@ -62,7 +61,7 @@ export function parseLatestUpdates(
                 const ext = cover.ext.startsWith(".")
                     ? cover.ext.slice(1)
                     : cover.ext;
-                imageUrl = `${COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
+                imageUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
             }
 
             // Build chapter subtitle

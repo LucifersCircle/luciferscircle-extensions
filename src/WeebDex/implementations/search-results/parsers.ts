@@ -1,17 +1,7 @@
 import type { SearchQuery, SearchResultItem } from "@paperback/types";
 import { ContentRating } from "@paperback/types";
-import type { WeebDexMangaListResponse } from "../shared/models";
-
-const COVER_DOMAIN = "https://srv.weebdex.net";
-
-export interface ExtractedFilters {
-    status: string[];
-    demographic: string[];
-    contentRating: string[];
-    includedTags: string[];
-    excludedTags: string[];
-    tagMode: string;
-}
+import type { ExtractedFilters, WeebDexMangaListResponse } from "../shared/models";
+import { WEEBDEX_COVER_DOMAIN } from "../../main";
 
 export function extractSearchFilters(query: SearchQuery): ExtractedFilters {
     const status: string[] = [];
@@ -103,7 +93,7 @@ export function parseSearchResults(
                 const ext = cover.ext.startsWith(".")
                     ? cover.ext.slice(1)
                     : cover.ext;
-                imageUrl = `${COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
+                imageUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
             }
 
             // Map content rating

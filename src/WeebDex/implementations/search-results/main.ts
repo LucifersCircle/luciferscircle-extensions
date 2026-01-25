@@ -14,11 +14,12 @@ import type {
     WeebDexTagListResponse,
 } from "../shared/models";
 import { extractSearchFilters, parseSearchResults } from "./parsers";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class SearchProvider {
     async getSearchFilters(): Promise<SearchFilter[]> {
         // Fetch available tags from API
-        const tagsUrl = new URL("https://api.weebdex.org")
+        const tagsUrl = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("manga")
             .addPathComponent("tag")
             .setQueryItem("limit", "100")
@@ -134,7 +135,7 @@ export class SearchProvider {
         const limit = 20;
         const searchTerm = query.title?.trim() || "";
 
-        const urlBuilder = new URL("https://api.weebdex.org")
+        const urlBuilder = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("manga")
             .setQueryItem("limit", limit.toString())
             .setQueryItem("page", page.toString());

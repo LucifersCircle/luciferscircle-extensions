@@ -11,6 +11,7 @@ import type {
     WeebDexChapterFeedResponse,
 } from "../shared/models";
 import { parseChapterDetails, parseChapterList } from "./parsers";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class ChapterProvider {
     async getChapters(sourceManga: SourceManga): Promise<Chapter[]> {
@@ -21,7 +22,7 @@ export class ChapterProvider {
 
         // Fetch all pages - remove tlang filter to get all languages
         while (hasMore) {
-            const url = new URL("https://api.weebdex.org")
+            const url = new URL(WEEBDEX_API_DOMAIN)
                 .addPathComponent("manga")
                 .addPathComponent(mangaId)
                 .addPathComponent("chapters")
@@ -64,7 +65,7 @@ export class ChapterProvider {
     async getChapterDetails(chapter: Chapter): Promise<ChapterDetails> {
         const chapterId = chapter.chapterId;
 
-        const url = new URL("https://api.weebdex.org")
+        const url = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("chapter")
             .addPathComponent(chapterId)
             .toString();

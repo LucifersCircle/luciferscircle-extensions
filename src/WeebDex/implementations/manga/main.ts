@@ -3,10 +3,11 @@ import { URL } from "@paperback/types";
 import { fetchJSON } from "../../services/network";
 import type { WeebDexManga } from "../shared/models";
 import { parseMangaDetails } from "./parsers";
+import { WEEBDEX_API_DOMAIN } from "../../main";
 
 export class MangaProvider {
     async getMangaDetails(mangaId: string): Promise<SourceManga> {
-        const url = new URL("https://api.weebdex.org")
+        const url = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("manga")
             .addPathComponent(mangaId)
             .toString();
