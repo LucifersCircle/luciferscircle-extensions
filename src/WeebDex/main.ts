@@ -7,6 +7,7 @@ import { ChapterProvider } from "./implementations/chapter-providing/main";
 import { DiscoverProvider } from "./implementations/discover-section/main";
 import { MangaProvider } from "./implementations/manga/main";
 import { SearchProvider } from "./implementations/search-results/main";
+import { SettingsFormProvider } from "./implementations/settings-form/main";
 import { applyMixins } from "./implementations/shared/utils";
 import { WeebInterceptor } from "./services/network";
 
@@ -15,7 +16,12 @@ export const WEEBDEX_API_DOMAIN = "https://api.weebdex.org";
 export const WEEBDEX_COVER_DOMAIN = "https://srv.weebdex.net";
 
 export interface WeebDexImplementation
-    extends SearchProvider, MangaProvider, ChapterProvider, DiscoverProvider {}
+    extends
+        SearchProvider,
+        MangaProvider,
+        ChapterProvider,
+        DiscoverProvider,
+        SettingsFormProvider {}
 
 export class WeebDexExtension implements Omit<Extension, keyof MangaProviding> {
     cookieStorageInterceptor = new CookieStorageInterceptor({
@@ -56,6 +62,7 @@ applyMixins(WeebDexExtension, [
     MangaProvider,
     ChapterProvider,
     DiscoverProvider,
+    SettingsFormProvider,
 ]);
 
 export const WeebDex = new WeebDexExtension();

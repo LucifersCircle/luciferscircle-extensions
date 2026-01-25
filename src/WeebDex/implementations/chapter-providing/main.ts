@@ -20,7 +20,7 @@ export class ChapterProvider {
         let currentPage = 1;
         let hasMore = true;
 
-        // Fetch all pages - remove tlang filter to get all languages
+        // Fetch all pages
         while (hasMore) {
             const url = new URL(WEEBDEX_API_DOMAIN)
                 .addPathComponent("manga")
@@ -28,7 +28,6 @@ export class ChapterProvider {
                 .addPathComponent("chapters")
                 .setQueryItem("limit", "100")
                 .setQueryItem("page", currentPage.toString())
-                // Removed tlang filter - we want all languages
                 .toString();
 
             const request: Request = { url, method: "GET" };
@@ -41,12 +40,26 @@ export class ChapterProvider {
             currentPage++;
         }
 
-        // update sortingIndex
-        allChapters.forEach((ch, index) => {
+        // Filter by selected language from settings
+        const selectedLanguages = this.getSelectedLanguages();
+        const filteredChapters = selectedLanguages.includes("all")
+            ? allChapters
+            : allChapters.filter((ch) =>
+                  selectedLanguages.includes(ch.langCode),
+              );
+
+        // Update sortingIndex after filtering
+        filteredChapters.forEach((ch, index) => {
             ch.sortingIndex = index;
         });
 
-        return allChapters;
+        return filteredChapters;
+    }
+
+    private getSelectedLanguages(): string[] {
+        const saved = Application.getState("weebdex-chapter-language-filter");
+        if (!saved) return ["all"];
+        return JSON.parse(saved as string) as string[];
     }
 
     async getChapterDetails(chapter: Chapter): Promise<ChapterDetails> {

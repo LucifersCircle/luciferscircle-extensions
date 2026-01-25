@@ -13,6 +13,7 @@ export default {
         SourceIntents.DISCOVER_SECIONS_PROVIDING,
         SourceIntents.CHAPTER_PROVIDING,
         SourceIntents.SEARCH_RESULTS_PROVIDING,
+        SourceIntents.SETTINGS_FORM_PROVIDING,
     ],
     badges: [],
     developers: [
