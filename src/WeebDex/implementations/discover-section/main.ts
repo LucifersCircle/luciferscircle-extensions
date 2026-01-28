@@ -46,7 +46,8 @@ export class DiscoverProvider {
         metadata?: Metadata,
     ): Promise<PagedResults<DiscoverSectionItem>> {
         const page = metadata?.page ?? 1;
-        const limit = 20;
+        const saved = Application.getState("weebdex-items-per-page");
+        const limit = parseInt((saved as string) ?? "42", 10);
 
         // Handle latest updates differently
         if (section.id === "latest-updates") {

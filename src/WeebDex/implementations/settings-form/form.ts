@@ -103,6 +103,7 @@ export class WeebDexSettingsForm extends Form {
             Section("original-language", [this.originalLanguageRow()]),
             Section("chapter-language", [this.chapterLanguageRow()]),
             Section("tag-exclusion", [this.tagExclusionRow()]),
+            Section("items-per-page", [this.itemsPerPageRow()]),
             Section("data-saver", [this.dataSaverRow()]),
         ];
     }
@@ -211,6 +212,33 @@ export class WeebDexSettingsForm extends Form {
         return SelectRow("tag-exclusion-filter", tagFilterProps);
     }
 
+    itemsPerPageRow(): FormItemElement<unknown> {
+        const selectedValue = this.getItemsPerPage();
+
+        const itemsPerPageProps: SelectRowProps = {
+            title: "Items Per Page",
+            subtitle:
+                `How many items to load per page.\nAffects:\n- Expanded "Discover" sections\n- Search`,
+            options: [
+                { id: "20", title: "20" },
+                { id: "30", title: "30" },
+                { id: "42", title: "42 (Default)" },
+                { id: "50", title: "50" },
+                { id: "70", title: "70" },
+                { id: "100", title: "100" },
+            ],
+            value: [selectedValue],
+            minItemCount: 0,
+            maxItemCount: 1,
+            onValueChange: Application.Selector(
+                this as WeebDexSettingsForm,
+                "handleItemsPerPageChange",
+            ),
+        };
+
+        return SelectRow("items-per-page", itemsPerPageProps);
+    }
+
     dataSaverRow(): FormItemElement<unknown> {
         const dataSaverEnabled = this.getDataSaverSetting();
 
@@ -244,6 +272,11 @@ export class WeebDexSettingsForm extends Form {
         const saved = Application.getState("weebdex-excluded-tags");
         if (!saved) return [];
         return JSON.parse(saved as string) as string[];
+    }
+
+    getItemsPerPage(): string {
+        const saved = Application.getState("weebdex-items-per-page");
+        return (saved as string) ?? "42"; // Default to 42
     }
 
     getDataSaverSetting(): boolean {
@@ -308,6 +341,12 @@ export class WeebDexSettingsForm extends Form {
 
     async handleTagExclusionChange(value: string[]): Promise<void> {
         Application.setState(JSON.stringify(value), "weebdex-excluded-tags");
+        this.reloadForm();
+    }
+
+    async handleItemsPerPageChange(value: string[]): Promise<void> {
+        const selectedValue = value[0] ?? "42";
+        Application.setState(selectedValue, "weebdex-items-per-page");
         this.reloadForm();
     }
 

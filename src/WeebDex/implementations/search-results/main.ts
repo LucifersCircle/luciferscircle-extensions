@@ -141,7 +141,8 @@ export class SearchProvider {
         sortingOption?: SortingOption,
     ): Promise<PagedResults<SearchResultItem>> {
         const page = metadata?.page ?? 1;
-        const limit = 20;
+        const saved = Application.getState("weebdex-items-per-page");
+        const limit = parseInt((saved as string) ?? "42", 10);
         const searchTerm = query.title?.trim() || "";
 
         const urlBuilder = new URL(WEEBDEX_API_DOMAIN)
