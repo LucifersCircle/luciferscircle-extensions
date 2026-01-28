@@ -198,7 +198,7 @@ export class WeebDexSettingsForm extends Form {
 
         const tagFilterProps: SelectRowProps = {
             title: "Tag Exclusion Filter",
-            subtitle: `Prevent showing titles that contain any of the selected tags.\nAffects:\n- "Latest Updates" section\n- Search`,
+            subtitle: `Prevent showing titles that contain any of the selected tags.\nAffects:\n- "Latest Updates" section\n- Search\n- Will be hidden from search "Filters"`,
             options: tagOptions,
             value: selectedTags,
             minItemCount: 0,
@@ -220,12 +220,12 @@ export class WeebDexSettingsForm extends Form {
             subtitle:
                 `How many items to load per page.\nAffects:\n- Expanded "Discover" sections\n- Search`,
             options: [
-                { id: "20", title: "20" },
-                { id: "30", title: "30" },
+                { id: "28", title: "28" },
                 { id: "42", title: "42 (Default)" },
-                { id: "50", title: "50" },
+                { id: "56", title: "56" },
                 { id: "70", title: "70" },
-                { id: "100", title: "100" },
+                { id: "84", title: "84" },
+                { id: "98", title: "98" },
             ],
             value: [selectedValue],
             minItemCount: 0,
