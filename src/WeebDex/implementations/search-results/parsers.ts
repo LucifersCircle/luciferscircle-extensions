@@ -57,11 +57,15 @@ export function extractSearchFilters(query: SearchQuery): ExtractedFilters {
                 });
                 break;
 
-            case "tagMode":
-                if (typeof filter.value === "string") {
-                    tagMode = filter.value;
+            case "tagMode": {
+                const selectedMode = Object.keys(filterValue).find(
+                    (key) => filterValue[key] === "included",
+                );
+                if (selectedMode) {
+                    tagMode = selectedMode;
                 }
                 break;
+            }
         }
     }
 

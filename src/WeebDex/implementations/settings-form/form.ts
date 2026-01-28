@@ -6,6 +6,9 @@ import {
     type FormSectionElement,
     type SelectRowProps,
 } from "@paperback/types";
+import { WEEBDEX_API_DOMAIN } from "../../main";
+import { fetchJSON } from "../../services/network";
+import { type WeebDexTagListResponse } from "../shared/models";
 
 const AVAILABLE_LANGUAGES = [
     { id: "en", title: "English" },
@@ -73,10 +76,31 @@ const AVAILABLE_LANGUAGES = [
 ];
 
 export class WeebDexSettingsForm extends Form {
+    private tags?: WeebDexTagListResponse;
+    private tagsLoadError?: Error;
+
+    override formWillAppear(): void {
+        // Fetch tags when form loads
+        fetchJSON<WeebDexTagListResponse>({
+            url: `${WEEBDEX_API_DOMAIN}/manga/tag?limit=100`,
+            method: "GET",
+        })
+            .then((tags) => {
+                this.tags = tags;
+                this.reloadForm();
+            })
+            .catch((error) => {
+                this.tagsLoadError = error as Error;
+                console.error("Failed to load tags:", error);
+                this.reloadForm();
+            });
+    }
+
     override getSections(): FormSectionElement[] {
         return [
             Section("original-language", [this.originalLanguageRow()]),
             Section("chapter-language", [this.chapterLanguageRow()]),
+            Section("tag-exclusion", [this.tagExclusionRow()]),
         ];
     }
 
@@ -109,7 +133,7 @@ export class WeebDexSettingsForm extends Form {
         const languageFilterProps: SelectRowProps = {
             title: "Original Language Filter",
             subtitle:
-                "Only show titles originally published in these languages. Only affects \"Latest Updates\" section and Search.",
+                'Only show titles originally published in these languages. Only affects "Latest Updates" section and Search.',
             options: [
                 { id: "all", title: "All Languages" },
                 ...AVAILABLE_LANGUAGES,
@@ -126,6 +150,66 @@ export class WeebDexSettingsForm extends Form {
         return SelectRow("original-language-filter", languageFilterProps);
     }
 
+    tagExclusionRow(): FormItemElement<unknown> {
+        const selectedTags = this.getExcludedTags();
+
+        // If tags haven't loaded yet, show loading state
+        if (!this.tags && !this.tagsLoadError) {
+            const loadingProps: SelectRowProps = {
+                title: "Tag Exclusion Filter",
+                subtitle: "Loading tags...",
+                options: [],
+                value: [],
+                minItemCount: 0,
+                maxItemCount: 1,
+                onValueChange: Application.Selector(
+                    this as WeebDexSettingsForm,
+                    "handleTagExclusionChange",
+                ),
+            };
+            return SelectRow("tag-exclusion-filter", loadingProps);
+        }
+
+        // If there was an error loading tags
+        if (this.tagsLoadError) {
+            const errorProps: SelectRowProps = {
+                title: "Tag Exclusion Filter",
+                subtitle: "Failed to load tags. Please try again later.",
+                options: [],
+                value: [],
+                minItemCount: 0,
+                maxItemCount: 1,
+                onValueChange: Application.Selector(
+                    this as WeebDexSettingsForm,
+                    "handleTagExclusionChange",
+                ),
+            };
+            return SelectRow("tag-exclusion-filter", errorProps);
+        }
+
+        // Build tag options with group labels
+        const tagOptions = this.tags!.data.map((tag) => ({
+            id: tag.id,
+            title: tag.name,
+        }));
+
+        const tagFilterProps: SelectRowProps = {
+            title: "Tag Exclusion Filter",
+            subtitle:
+                "Prevent showing titles that contain any of the selected tags.",
+            options: tagOptions,
+            value: selectedTags,
+            minItemCount: 0,
+            maxItemCount: tagOptions.length,
+            onValueChange: Application.Selector(
+                this as WeebDexSettingsForm,
+                "handleTagExclusionChange",
+            ),
+        };
+
+        return SelectRow("tag-exclusion-filter", tagFilterProps);
+    }
+
     // Getter methods
     getChapterLanguages(): string[] {
         const saved = Application.getState("weebdex-chapter-language-filter");
@@ -136,6 +220,12 @@ export class WeebDexSettingsForm extends Form {
     getOriginalLanguages(): string[] {
         const saved = Application.getState("weebdex-original-language-filter");
         if (!saved) return ["all"];
+        return JSON.parse(saved as string) as string[];
+    }
+
+    getExcludedTags(): string[] {
+        const saved = Application.getState("weebdex-excluded-tags");
+        if (!saved) return [];
         return JSON.parse(saved as string) as string[];
     }
 
@@ -191,6 +281,11 @@ export class WeebDexSettingsForm extends Form {
             JSON.stringify(finalValue),
             "weebdex-original-language-filter",
         );
+        this.reloadForm();
+    }
+
+    async handleTagExclusionChange(value: string[]): Promise<void> {
+        Application.setState(JSON.stringify(value), "weebdex-excluded-tags");
         this.reloadForm();
     }
 }

@@ -114,6 +114,12 @@ export class DiscoverProvider {
             urlBuilder.setQueryItem("lang", selectedLanguages);
         }
 
+        // apply excluded tags
+        const excludedTags = this.getExcludedTags();
+        if (excludedTags.length > 0) {
+            urlBuilder.setQueryItem("tagx", excludedTags);
+        }
+
         const url = urlBuilder.toString();
         const request: Request = { url, method: "GET" };
         const json = await fetchJSON<WeebDexChapterFeedResponse>(request);
@@ -130,6 +136,12 @@ export class DiscoverProvider {
     private getOriginalLanguages(): string[] {
         const saved = Application.getState("weebdex-original-language-filter");
         if (!saved) return ["all"];
+        return JSON.parse(saved as string) as string[];
+    }
+
+    private getExcludedTags(): string[] {
+        const saved = Application.getState("weebdex-excluded-tags");
+        if (!saved) return [];
         return JSON.parse(saved as string) as string[];
     }
 }

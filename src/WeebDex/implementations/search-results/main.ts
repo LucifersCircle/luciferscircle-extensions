@@ -82,14 +82,19 @@ export class SearchProvider {
             maximum: undefined,
         });
 
+        const excludedTagIds = this.getExcludedTags();
+        const availableTags = tagsJson.data.filter(
+            (tag) => !excludedTagIds.includes(tag.id),
+        );
+
         // Tags filter
         filters.push({
             type: "multiselect",
             id: "tags",
             title: "Tags",
-            options: tagsJson.data.map((tag) => ({
+            options: availableTags.map((tag) => ({
                 id: tag.id,
-                value: `${tag.name} [${tag.group}]`,
+                value: tag.name,
             })),
             value: {},
             allowExclusion: true,
@@ -99,14 +104,17 @@ export class SearchProvider {
 
         // Tag mode filter (dropdown instead of select)
         filters.push({
-            type: "dropdown",
+            type: "multiselect",
             id: "tagMode",
-            title: "Tag Inclusion Mode",
+            title: "Tag Inclusion Mode. Only one applies.",
             options: [
-                { id: "AND", value: "AND (All tags)" },
-                { id: "OR", value: "OR (Any tag)" },
+                { id: "AND", value: "AND - Must match ALL selected tags" },
+                { id: "OR", value: "OR - Can match ANY selected tag" },
             ],
-            value: "AND",
+            value: { AND: "included" }, // Default to AND being selected
+            allowExclusion: false,
+            allowEmptySelection: false,
+            maximum: 1, // Only allow selecting one at a time
         });
 
         return filters;
@@ -174,7 +182,14 @@ export class SearchProvider {
         if (filters.includedTags.length > 0) {
             urlBuilder.setQueryItem("tag", filters.includedTags);
         }
-        if (filters.excludedTags.length > 0) {
+        // Apply tag exclusions from settings (merge with user's excluded tags)
+        const settingsExcludedTags = this.getExcludedTags();
+        if (settingsExcludedTags.length > 0) {
+            const allExcludedTags = [
+                ...new Set([...filters.excludedTags, ...settingsExcludedTags]),
+            ];
+            urlBuilder.setQueryItem("tagx", allExcludedTags);
+        } else if (filters.excludedTags.length > 0) {
             urlBuilder.setQueryItem("tagx", filters.excludedTags);
         }
 
@@ -212,6 +227,12 @@ export class SearchProvider {
     private getOriginalLanguages(): string[] {
         const saved = Application.getState("weebdex-original-language-filter");
         if (!saved) return ["all"];
+        return JSON.parse(saved as string) as string[];
+    }
+
+    private getExcludedTags(): string[] {
+        const saved = Application.getState("weebdex-excluded-tags");
+        if (!saved) return [];
         return JSON.parse(saved as string) as string[];
     }
 }
