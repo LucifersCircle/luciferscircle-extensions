@@ -2,9 +2,11 @@ import {
     Form,
     Section,
     SelectRow,
+    ToggleRow,
     type FormItemElement,
     type FormSectionElement,
     type SelectRowProps,
+    type ToggleRowProps,
 } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
@@ -101,6 +103,7 @@ export class WeebDexSettingsForm extends Form {
             Section("original-language", [this.originalLanguageRow()]),
             Section("chapter-language", [this.chapterLanguageRow()]),
             Section("tag-exclusion", [this.tagExclusionRow()]),
+            Section("data-saver", [this.dataSaverRow()]),
         ];
     }
 
@@ -109,8 +112,7 @@ export class WeebDexSettingsForm extends Form {
 
         const languageFilterProps: SelectRowProps = {
             title: "Chapter Language Filter",
-            subtitle:
-                "The default language the filter for chapter list is set to.",
+            subtitle: `The default language(s) you want to see in the chapter list.\nAffects:\n- Chapter List\n- Chapter Version Priority list`,
             options: [
                 { id: "all", title: "All Languages" },
                 ...AVAILABLE_LANGUAGES,
@@ -133,7 +135,7 @@ export class WeebDexSettingsForm extends Form {
         const languageFilterProps: SelectRowProps = {
             title: "Original Language Filter",
             subtitle:
-                'Only show titles originally published in these languages. Only affects "Latest Updates" section and Search.',
+                'Only show titles originally published in these languages.\nAffects:\n- "Latest Updates" section\n- Search',
             options: [
                 { id: "all", title: "All Languages" },
                 ...AVAILABLE_LANGUAGES,
@@ -195,8 +197,7 @@ export class WeebDexSettingsForm extends Form {
 
         const tagFilterProps: SelectRowProps = {
             title: "Tag Exclusion Filter",
-            subtitle:
-                "Prevent showing titles that contain any of the selected tags.",
+            subtitle: `Prevent showing titles that contain any of the selected tags.\nAffects:\n- "Latest Updates" section\n- Search`,
             options: tagOptions,
             value: selectedTags,
             minItemCount: 0,
@@ -208,6 +209,22 @@ export class WeebDexSettingsForm extends Form {
         };
 
         return SelectRow("tag-exclusion-filter", tagFilterProps);
+    }
+
+    dataSaverRow(): FormItemElement<unknown> {
+        const dataSaverEnabled = this.getDataSaverSetting();
+
+        const dataSaverProps: ToggleRowProps = {
+            title: "Data Saver",
+            subtitle: `Reduce data usage by viewing lower quality versions of chapters.\nAffects:\n- Chapter Images`,
+            value: dataSaverEnabled,
+            onValueChange: Application.Selector(
+                this as WeebDexSettingsForm,
+                "handleDataSaverChange",
+            ),
+        };
+
+        return ToggleRow("data-saver", dataSaverProps);
     }
 
     // Getter methods
@@ -227,6 +244,11 @@ export class WeebDexSettingsForm extends Form {
         const saved = Application.getState("weebdex-excluded-tags");
         if (!saved) return [];
         return JSON.parse(saved as string) as string[];
+    }
+
+    getDataSaverSetting(): boolean {
+        const saved = Application.getState("weebdex-data-saver");
+        return (saved as boolean) ?? false; // Default to false (OFF)
     }
 
     // Handler methods
@@ -286,6 +308,11 @@ export class WeebDexSettingsForm extends Form {
 
     async handleTagExclusionChange(value: string[]): Promise<void> {
         Application.setState(JSON.stringify(value), "weebdex-excluded-tags");
+        this.reloadForm();
+    }
+
+    async handleDataSaverChange(value: boolean): Promise<void> {
+        Application.setState(value, "weebdex-data-saver");
         this.reloadForm();
     }
 }

@@ -40,12 +40,15 @@ export function parseChapterList(
 export function parseChapterDetails(
     chapter: WeebDexChapter,
     chapterObj: Chapter,
+    dataSaver: boolean,
 ): ChapterDetails {
     const node = chapter.node || WEEBDEX_API_DOMAIN;
     const chapterId = chapter.id;
 
-    // Use data_optimized if available, otherwise fall back to data
-    const pageData = chapter.data_optimized || chapter.data || [];
+    // Use optimized data if data saver is ON, otherwise use full quality
+    const pageData = dataSaver
+        ? chapter.data_optimized || chapter.data || []
+        : chapter.data || chapter.data_optimized || [];
 
     // Build image URLs
     const pages = pageData.map(

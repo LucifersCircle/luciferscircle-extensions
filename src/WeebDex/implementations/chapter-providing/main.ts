@@ -74,6 +74,12 @@ export class ChapterProvider {
         const request: Request = { url, method: "GET" };
         const json = await fetchJSON<WeebDexChapter>(request);
 
-        return parseChapterDetails(json, chapter);
+        const dataSaver = this.getDataSaverSetting();
+        return parseChapterDetails(json, chapter, dataSaver);
+    }
+
+    private getDataSaverSetting(): boolean {
+        const saved = Application.getState("weebdex-data-saver");
+        return (saved as boolean) ?? false;
     }
 }
