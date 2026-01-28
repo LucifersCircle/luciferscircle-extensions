@@ -12,6 +12,7 @@ import {
     type WeebDexChapterFeedResponse,
     type WeebDexMangaListResponse,
 } from "../shared/models";
+import { getExcludedTags, getOriginalLanguages } from "../shared/utils";
 import { parseDiscoverItems, parseLatestUpdates } from "./parsers";
 
 export class DiscoverProvider {
@@ -109,13 +110,13 @@ export class DiscoverProvider {
             .setQueryItem("contentRating", ["safe", "suggestive", "erotica"]);
 
         // Apply original language filter from settings
-        const selectedLanguages = this.getOriginalLanguages();
+        const selectedLanguages = getOriginalLanguages();
         if (!selectedLanguages.includes("all")) {
             urlBuilder.setQueryItem("lang", selectedLanguages);
         }
 
         // apply excluded tags
-        const excludedTags = this.getExcludedTags();
+        const excludedTags = getExcludedTags();
         if (excludedTags.length > 0) {
             urlBuilder.setQueryItem("tagx", excludedTags);
         }
@@ -131,17 +132,5 @@ export class DiscoverProvider {
             items,
             metadata: hasMore ? { page: page + 1 } : undefined,
         };
-    }
-
-    private getOriginalLanguages(): string[] {
-        const saved = Application.getState("weebdex-original-language-filter");
-        if (!saved) return ["all"];
-        return JSON.parse(saved as string) as string[];
-    }
-
-    private getExcludedTags(): string[] {
-        const saved = Application.getState("weebdex-excluded-tags");
-        if (!saved) return [];
-        return JSON.parse(saved as string) as string[];
     }
 }

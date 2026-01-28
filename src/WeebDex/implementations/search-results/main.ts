@@ -14,6 +14,7 @@ import type {
     WeebDexMangaListResponse,
     WeebDexTagListResponse,
 } from "../shared/models";
+import { getExcludedTags, getOriginalLanguages } from "../shared/utils";
 import { extractSearchFilters, parseSearchResults } from "./parsers";
 
 export class SearchProvider {
@@ -82,7 +83,7 @@ export class SearchProvider {
             maximum: undefined,
         });
 
-        const excludedTagIds = this.getExcludedTags();
+        const excludedTagIds = getExcludedTags();
         const availableTags = tagsJson.data.filter(
             (tag) => !excludedTagIds.includes(tag.id),
         );
@@ -183,7 +184,7 @@ export class SearchProvider {
             urlBuilder.setQueryItem("tag", filters.includedTags);
         }
         // Apply tag exclusions from settings (merge with user's excluded tags)
-        const settingsExcludedTags = this.getExcludedTags();
+        const settingsExcludedTags = getExcludedTags();
         if (settingsExcludedTags.length > 0) {
             const allExcludedTags = [
                 ...new Set([...filters.excludedTags, ...settingsExcludedTags]),
@@ -199,7 +200,7 @@ export class SearchProvider {
         }
 
         // Apply original language filter from settings
-        const selectedLanguages = this.getOriginalLanguages();
+        const selectedLanguages = getOriginalLanguages();
         if (!selectedLanguages.includes("all")) {
             urlBuilder.setQueryItem("lang", selectedLanguages);
         }
@@ -222,17 +223,5 @@ export class SearchProvider {
             items,
             metadata: hasMore ? { page: page + 1 } : undefined,
         };
-    }
-
-    private getOriginalLanguages(): string[] {
-        const saved = Application.getState("weebdex-original-language-filter");
-        if (!saved) return ["all"];
-        return JSON.parse(saved as string) as string[];
-    }
-
-    private getExcludedTags(): string[] {
-        const saved = Application.getState("weebdex-excluded-tags");
-        if (!saved) return [];
-        return JSON.parse(saved as string) as string[];
     }
 }
