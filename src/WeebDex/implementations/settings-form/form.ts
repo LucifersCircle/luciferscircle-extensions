@@ -109,7 +109,7 @@ export class WeebDexSettingsForm extends Form {
         const languageFilterProps: SelectRowProps = {
             title: "Original Language Filter",
             subtitle:
-                "Only show titles originally published in these languages. (not yet implemented)",
+                "Only show titles originally published in these languages. Only affects \"Latest Updates\" section and Search.",
             options: [
                 { id: "all", title: "All Languages" },
                 ...AVAILABLE_LANGUAGES,

@@ -148,12 +148,12 @@ export class SearchProvider {
         // Extract and apply filters
         const filters = extractSearchFilters(query);
 
-        // Apply status filter (use array for multiple values)
+        // Apply status filter
         if (filters.status.length > 0) {
             urlBuilder.setQueryItem("status", filters.status);
         }
 
-        // Apply demographic filter (use array for multiple values)
+        // Apply demographic filter
         if (filters.demographic.length > 0) {
             urlBuilder.setQueryItem("demographic", filters.demographic);
         }
@@ -183,15 +183,18 @@ export class SearchProvider {
             urlBuilder.setQueryItem("tmod", filters.tagMode);
         }
 
-        // Add sorting
-        // Only add sort if not "none"
-        const sortId = sortingOption?.id || "none";
+        // Apply original language filter from settings
+        const selectedLanguages = this.getOriginalLanguages();
+        if (!selectedLanguages.includes("all")) {
+            urlBuilder.setQueryItem("lang", selectedLanguages);
+        }
 
+        // Add sorting
+        const sortId = sortingOption?.id || "none";
         if (sortId !== "none") {
             urlBuilder.setQueryItem("sort", sortId);
             urlBuilder.setQueryItem("order", "desc");
         }
-        // When sortId === "none", don't add sort/order params at all
 
         const url = urlBuilder.toString();
         const request: Request = { url, method: "GET" };
@@ -204,5 +207,11 @@ export class SearchProvider {
             items,
             metadata: hasMore ? { page: page + 1 } : undefined,
         };
+    }
+
+    private getOriginalLanguages(): string[] {
+        const saved = Application.getState("weebdex-original-language-filter");
+        if (!saved) return ["all"];
+        return JSON.parse(saved as string) as string[];
     }
 }

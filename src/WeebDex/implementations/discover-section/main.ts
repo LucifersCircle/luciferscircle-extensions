@@ -101,14 +101,20 @@ export class DiscoverProvider {
         page: number,
         limit: number,
     ): Promise<PagedResults<DiscoverSectionItem>> {
-        const url = new URL(WEEBDEX_API_DOMAIN)
+        const urlBuilder = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("chapter")
-            .addPathComponent("updates") // Changed from "feed" to "updates"
+            .addPathComponent("updates")
             .setQueryItem("limit", limit.toString())
             .setQueryItem("page", page.toString())
-            .setQueryItem("contentRating", ["safe", "suggestive", "erotica"])
-            .toString();
+            .setQueryItem("contentRating", ["safe", "suggestive", "erotica"]);
 
+        // Apply original language filter from settings
+        const selectedLanguages = this.getOriginalLanguages();
+        if (!selectedLanguages.includes("all")) {
+            urlBuilder.setQueryItem("lang", selectedLanguages);
+        }
+
+        const url = urlBuilder.toString();
         const request: Request = { url, method: "GET" };
         const json = await fetchJSON<WeebDexChapterFeedResponse>(request);
 
@@ -119,5 +125,11 @@ export class DiscoverProvider {
             items,
             metadata: hasMore ? { page: page + 1 } : undefined,
         };
+    }
+
+    private getOriginalLanguages(): string[] {
+        const saved = Application.getState("weebdex-original-language-filter");
+        if (!saved) return ["all"];
+        return JSON.parse(saved as string) as string[];
     }
 }
