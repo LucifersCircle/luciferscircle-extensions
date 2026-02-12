@@ -7,6 +7,7 @@ import type {
 import { URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
+import { getChapterLanguages, getDataSaver } from "../settings-form/main";
 import type {
     WeebDexChapter,
     WeebDexChapterFeedResponse,
@@ -41,7 +42,7 @@ export class ChapterProvider {
         }
 
         // Filter by selected language from settings
-        const selectedLanguages = this.getSelectedLanguages();
+        const selectedLanguages = getChapterLanguages();
         const filteredChapters = selectedLanguages.includes("all")
             ? allChapters
             : allChapters.filter((ch) =>
@@ -57,12 +58,6 @@ export class ChapterProvider {
         return filteredChapters;
     }
 
-    private getSelectedLanguages(): string[] {
-        const saved = Application.getState("weebdex-chapter-language-filter");
-        if (!saved) return ["all"];
-        return JSON.parse(saved as string) as string[];
-    }
-
     async getChapterDetails(chapter: Chapter): Promise<ChapterDetails> {
         const chapterId = chapter.chapterId;
 
@@ -74,12 +69,7 @@ export class ChapterProvider {
         const request: Request = { url, method: "GET" };
         const json = await fetchJSON<WeebDexChapter>(request);
 
-        const dataSaver = this.getDataSaverSetting();
+        const dataSaver = getDataSaver();
         return parseChapterDetails(json, chapter, dataSaver);
-    }
-
-    private getDataSaverSetting(): boolean {
-        const saved = Application.getState("weebdex-data-saver");
-        return (saved as boolean) ?? false;
     }
 }

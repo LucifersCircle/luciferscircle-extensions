@@ -11,71 +11,19 @@ import {
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import { type WeebDexTagListResponse } from "../shared/models";
-
-const AVAILABLE_LANGUAGES = [
-    { id: "en", title: "English" },
-    { id: "ja", title: "Japanese" },
-    { id: "ko", title: "Korean" },
-    { id: "zh", title: "Chinese (Simplified)" },
-    { id: "zh-hk", title: "Chinese (Traditional)" },
-    { id: "id", title: "Indonesian" },
-    { id: "jv", title: "Javanese" },
-    { id: "vi", title: "Vietnamese" },
-    { id: "af", title: "Afrikaans" },
-    { id: "sq", title: "Albanian" },
-    { id: "ar", title: "Arabic" },
-    { id: "az", title: "Azerbaijani" },
-    { id: "eu", title: "Basque" },
-    { id: "be", title: "Belarusian" },
-    { id: "bn", title: "Bengali" },
-    { id: "bg", title: "Bulgarian" },
-    { id: "my", title: "Burmese" },
-    { id: "ca", title: "Catalan" },
-    { id: "cv", title: "Chuvash" },
-    { id: "hr", title: "Croatian" },
-    { id: "cs", title: "Czech" },
-    { id: "da", title: "Danish" },
-    { id: "nl", title: "Dutch" },
-    { id: "eo", title: "Esperanto" },
-    { id: "et", title: "Estonian" },
-    { id: "tl", title: "Filipino" },
-    { id: "fi", title: "Finnish" },
-    { id: "fr", title: "French" },
-    { id: "ka", title: "Georgian" },
-    { id: "de", title: "German" },
-    { id: "el", title: "Greek" },
-    { id: "he", title: "Hebrew" },
-    { id: "hi", title: "Hindi" },
-    { id: "hu", title: "Hungarian" },
-    { id: "ga", title: "Irish" },
-    { id: "it", title: "Italian" },
-    { id: "kk", title: "Kazakh" },
-    { id: "la", title: "Latin" },
-    { id: "lt", title: "Lithuanian" },
-    { id: "ms", title: "Malay" },
-    { id: "mn", title: "Mongolian" },
-    { id: "ne", title: "Nepali" },
-    { id: "no", title: "Norwegian" },
-    { id: "fa", title: "Persian" },
-    { id: "pl", title: "Polish" },
-    { id: "pt", title: "Portuguese" },
-    { id: "pt-br", title: "Portuguese (Brazil)" },
-    { id: "ro", title: "Romanian" },
-    { id: "ru", title: "Russian" },
-    { id: "sr", title: "Serbian" },
-    { id: "sk", title: "Slovak" },
-    { id: "sl", title: "Slovenian" },
-    { id: "es", title: "Spanish" },
-    { id: "es-la", title: "Spanish (LATAM)" },
-    { id: "sv", title: "Swedish" },
-    { id: "tam", title: "Tamil" },
-    { id: "te", title: "Telugu" },
-    { id: "th", title: "Thai" },
-    { id: "tr", title: "Turkish" },
-    { id: "uk", title: "Ukrainian" },
-    { id: "ur", title: "Urdu" },
-    { id: "uz", title: "Uzbek" },
-];
+import {
+    getChapterLanguages,
+    getDataSaver,
+    getExcludedTags,
+    getItemsPerPage,
+    getOriginalLanguages,
+    setChapterLanguages,
+    setDataSaver,
+    setExcludedTags,
+    setItemsPerPage,
+    setOriginalLanguages,
+} from "./main";
+import { AVAILABLE_LANGUAGES } from "./models";
 
 export class WeebDexSettingsForm extends Form {
     private tags?: WeebDexTagListResponse;
@@ -108,9 +56,9 @@ export class WeebDexSettingsForm extends Form {
         ];
     }
 
-    chapterLanguageRow(): FormItemElement<unknown> {
-        const selectedLanguages = this.getChapterLanguages();
+    // Row-building methods
 
+    chapterLanguageRow(): FormItemElement<unknown> {
         const languageFilterProps: SelectRowProps = {
             title: "Chapter Language Filter",
             subtitle: `The default language(s) you want to see in the chapter list.\nAffects:\n- Chapter List\n- Chapter Version Priority list`,
@@ -118,7 +66,7 @@ export class WeebDexSettingsForm extends Form {
                 { id: "all", title: "All Languages" },
                 ...AVAILABLE_LANGUAGES,
             ],
-            value: selectedLanguages,
+            value: getChapterLanguages(),
             minItemCount: 0,
             maxItemCount: AVAILABLE_LANGUAGES.length + 1,
             onValueChange: Application.Selector(
@@ -131,8 +79,6 @@ export class WeebDexSettingsForm extends Form {
     }
 
     originalLanguageRow(): FormItemElement<unknown> {
-        const selectedLanguages = this.getOriginalLanguages();
-
         const languageFilterProps: SelectRowProps = {
             title: "Original Language Filter",
             subtitle:
@@ -141,7 +87,7 @@ export class WeebDexSettingsForm extends Form {
                 { id: "all", title: "All Languages" },
                 ...AVAILABLE_LANGUAGES,
             ],
-            value: selectedLanguages,
+            value: getOriginalLanguages(),
             minItemCount: 0,
             maxItemCount: AVAILABLE_LANGUAGES.length + 1,
             onValueChange: Application.Selector(
@@ -154,8 +100,6 @@ export class WeebDexSettingsForm extends Form {
     }
 
     tagExclusionRow(): FormItemElement<unknown> {
-        const selectedTags = this.getExcludedTags();
-
         // If tags haven't loaded yet, show loading state
         if (!this.tags && !this.tagsLoadError) {
             const loadingProps: SelectRowProps = {
@@ -200,7 +144,7 @@ export class WeebDexSettingsForm extends Form {
             title: "Tag Exclusion Filter",
             subtitle: `Prevent showing titles that contain any of the selected tags.\nAffects:\n- "Latest Updates" section\n- Search\n- Will be hidden from search "Filters"`,
             options: tagOptions,
-            value: selectedTags,
+            value: getExcludedTags(),
             minItemCount: 0,
             maxItemCount: tagOptions.length,
             onValueChange: Application.Selector(
@@ -213,12 +157,9 @@ export class WeebDexSettingsForm extends Form {
     }
 
     itemsPerPageRow(): FormItemElement<unknown> {
-        const selectedValue = this.getItemsPerPage();
-
         const itemsPerPageProps: SelectRowProps = {
             title: "Items Per Page",
-            subtitle:
-                `How many items to load per page.\nAffects:\n- Expanded "Discover" sections\n- Search`,
+            subtitle: `How many items to load per page.\nAffects:\n- Expanded "Discover" sections\n- Search`,
             options: [
                 { id: "28", title: "28" },
                 { id: "42", title: "42 (Default)" },
@@ -227,7 +168,7 @@ export class WeebDexSettingsForm extends Form {
                 { id: "84", title: "84" },
                 { id: "98", title: "98" },
             ],
-            value: [selectedValue],
+            value: [getItemsPerPage()],
             minItemCount: 0,
             maxItemCount: 1,
             onValueChange: Application.Selector(
@@ -240,12 +181,10 @@ export class WeebDexSettingsForm extends Form {
     }
 
     dataSaverRow(): FormItemElement<unknown> {
-        const dataSaverEnabled = this.getDataSaverSetting();
-
         const dataSaverProps: ToggleRowProps = {
             title: "Data Saver",
             subtitle: `Reduce data usage by viewing lower quality versions of chapters.\nAffects:\n- Chapter Images`,
-            value: dataSaverEnabled,
+            value: getDataSaver(),
             onValueChange: Application.Selector(
                 this as WeebDexSettingsForm,
                 "handleDataSaverChange",
@@ -255,47 +194,17 @@ export class WeebDexSettingsForm extends Form {
         return ToggleRow("data-saver", dataSaverProps);
     }
 
-    // Getter methods
-    getChapterLanguages(): string[] {
-        const saved = Application.getState("weebdex-chapter-language-filter");
-        if (!saved) return ["all"];
-        return JSON.parse(saved as string) as string[];
-    }
-
-    getOriginalLanguages(): string[] {
-        const saved = Application.getState("weebdex-original-language-filter");
-        if (!saved) return ["all"];
-        return JSON.parse(saved as string) as string[];
-    }
-
-    getExcludedTags(): string[] {
-        const saved = Application.getState("weebdex-excluded-tags");
-        if (!saved) return [];
-        return JSON.parse(saved as string) as string[];
-    }
-
-    getItemsPerPage(): string {
-        const saved = Application.getState("weebdex-items-per-page");
-        return (saved as string) ?? "42"; // Default to 42
-    }
-
-    getDataSaverSetting(): boolean {
-        const saved = Application.getState("weebdex-data-saver");
-        return (saved as boolean) ?? false; // Default to false (OFF)
-    }
-
     // Handler methods
+
     async handleChapterLanguageChange(value: string[]): Promise<void> {
         let finalValue = value;
 
         // If "all" is selected, only keep "all"
         if (value.includes("all") && value.length > 1) {
-            // If "all" was just added, keep only "all"
-            const previousValue = this.getChapterLanguages();
+            const previousValue = getChapterLanguages();
             if (!previousValue.includes("all")) {
                 finalValue = ["all"];
             } else {
-                // If "all" was already selected, remove it (user selected a specific language)
                 finalValue = value.filter((v) => v !== "all");
             }
         }
@@ -305,10 +214,7 @@ export class WeebDexSettingsForm extends Form {
             finalValue = ["all"];
         }
 
-        Application.setState(
-            JSON.stringify(finalValue),
-            "weebdex-chapter-language-filter",
-        );
+        setChapterLanguages(finalValue);
         this.reloadForm();
     }
 
@@ -317,12 +223,10 @@ export class WeebDexSettingsForm extends Form {
 
         // If "all" is selected, only keep "all"
         if (value.includes("all") && value.length > 1) {
-            // If "all" was just added, keep only "all"
-            const previousValue = this.getOriginalLanguages();
+            const previousValue = getOriginalLanguages();
             if (!previousValue.includes("all")) {
                 finalValue = ["all"];
             } else {
-                // If "all" was already selected, remove it (user selected a specific language)
                 finalValue = value.filter((v) => v !== "all");
             }
         }
@@ -332,26 +236,23 @@ export class WeebDexSettingsForm extends Form {
             finalValue = ["all"];
         }
 
-        Application.setState(
-            JSON.stringify(finalValue),
-            "weebdex-original-language-filter",
-        );
+        setOriginalLanguages(finalValue);
         this.reloadForm();
     }
 
     async handleTagExclusionChange(value: string[]): Promise<void> {
-        Application.setState(JSON.stringify(value), "weebdex-excluded-tags");
+        setExcludedTags(value);
         this.reloadForm();
     }
 
     async handleItemsPerPageChange(value: string[]): Promise<void> {
         const selectedValue = value[0] ?? "42";
-        Application.setState(selectedValue, "weebdex-items-per-page");
+        setItemsPerPage(selectedValue);
         this.reloadForm();
     }
 
     async handleDataSaverChange(value: boolean): Promise<void> {
-        Application.setState(value, "weebdex-data-saver");
+        setDataSaver(value);
         this.reloadForm();
     }
 }

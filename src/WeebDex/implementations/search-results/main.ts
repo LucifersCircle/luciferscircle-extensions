@@ -9,12 +9,16 @@ import type {
 import { URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
+import {
+    getExcludedTags,
+    getItemsPerPage,
+    getOriginalLanguages,
+} from "../settings-form/main";
 import type {
     Metadata,
     WeebDexMangaListResponse,
     WeebDexTagListResponse,
 } from "../shared/models";
-import { getExcludedTags, getOriginalLanguages } from "../shared/utils";
 import { extractSearchFilters, parseSearchResults } from "./parsers";
 
 export class SearchProvider {
@@ -141,8 +145,7 @@ export class SearchProvider {
         sortingOption?: SortingOption,
     ): Promise<PagedResults<SearchResultItem>> {
         const page = metadata?.page ?? 1;
-        const saved = Application.getState("weebdex-items-per-page");
-        const limit = parseInt((saved as string) ?? "42", 10);
+        const limit = parseInt(getItemsPerPage(), 10);
         const searchTerm = query.title?.trim() || "";
 
         const urlBuilder = new URL(WEEBDEX_API_DOMAIN)

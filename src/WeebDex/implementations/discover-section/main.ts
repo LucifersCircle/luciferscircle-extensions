@@ -8,11 +8,15 @@ import { DiscoverSectionType, URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import {
+    getExcludedTags,
+    getItemsPerPage,
+    getOriginalLanguages,
+} from "../settings-form/main";
+import {
     type Metadata,
     type WeebDexChapterFeedResponse,
     type WeebDexMangaListResponse,
 } from "../shared/models";
-import { getExcludedTags, getOriginalLanguages } from "../shared/utils";
 import { parseDiscoverItems, parseLatestUpdates } from "./parsers";
 
 export class DiscoverProvider {
@@ -46,8 +50,7 @@ export class DiscoverProvider {
         metadata?: Metadata,
     ): Promise<PagedResults<DiscoverSectionItem>> {
         const page = metadata?.page ?? 1;
-        const saved = Application.getState("weebdex-items-per-page");
-        const limit = parseInt((saved as string) ?? "42", 10);
+        const limit = parseInt(getItemsPerPage(), 10);
 
         // Handle latest updates differently
         if (section.id === "latest-updates") {
