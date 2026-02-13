@@ -1,5 +1,5 @@
 import { Form, type SettingsFormProviding } from "@paperback/types";
-import { WeebDexSettingsForm } from "./forms";
+import { WeebDexSettingsForm } from "./landing";
 
 // ============================
 // Chapter Language Filter

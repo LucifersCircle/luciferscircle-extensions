@@ -7,7 +7,7 @@ import type {
 import { URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
-import { getChapterLanguages, getDataSaver } from "../settings-form/main";
+import { getChapterLanguages, getDataSaver } from "../settings-form/forms/main";
 import type {
     WeebDexChapter,
     WeebDexChapterFeedResponse,

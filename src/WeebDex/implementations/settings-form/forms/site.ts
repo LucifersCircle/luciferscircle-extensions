@@ -1,6 +1,5 @@
 import {
     Form,
-    NavigationRow,
     Section,
     SelectRow,
     ToggleRow,
@@ -9,9 +8,10 @@ import {
     type SelectRowProps,
     type ToggleRowProps,
 } from "@paperback/types";
-import { WEEBDEX_API_DOMAIN } from "../../main";
-import { fetchJSON } from "../../services/network";
-import { type WeebDexTagListResponse } from "../shared/models";
+import { WEEBDEX_API_DOMAIN } from "../../../main";
+import { fetchJSON } from "../../../services/network";
+import { type WeebDexTagListResponse } from "../../shared/models";
+import { AVAILABLE_LANGUAGES } from "../models";
 import {
     getChapterLanguages,
     getDataSaver,
@@ -24,13 +24,8 @@ import {
     setItemsPerPage,
     setOriginalLanguages,
 } from "./main";
-import { AVAILABLE_LANGUAGES } from "./models";
 
-// ============================
-// Site Settings Form
-// ============================
-
-class SiteSettingsForm extends Form {
+export class SiteSettingsForm extends Form {
     private tags?: WeebDexTagListResponse;
     private tagsLoadError?: Error;
 
@@ -283,36 +278,5 @@ class SiteSettingsForm extends Form {
     async handleDataSaverChange(value: boolean): Promise<void> {
         setDataSaver(value);
         this.reloadForm();
-    }
-}
-
-// ============================
-// Search Settings Form
-// ============================
-
-class SearchSettingsForm extends Form {
-    override getSections(): FormSectionElement[] {
-        return [Section("placeholder", [])];
-    }
-}
-
-// ============================
-// Hub Settings Form
-// ============================
-
-export class WeebDexSettingsForm extends Form {
-    override getSections(): FormSectionElement[] {
-        return [
-            Section("mainSettings", [
-                NavigationRow("site_settings", {
-                    title: "Site Settings",
-                    form: new SiteSettingsForm(),
-                }),
-                NavigationRow("search_settings", {
-                    title: "Search Settings",
-                    form: new SearchSettingsForm(),
-                }),
-            ]),
-        ];
     }
 }

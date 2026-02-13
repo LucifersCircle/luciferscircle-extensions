@@ -13,7 +13,7 @@ import {
     getExcludedTags,
     getItemsPerPage,
     getOriginalLanguages,
-} from "../settings-form/main";
+} from "../settings-form/forms/main";
 import type {
     Metadata,
     WeebDexMangaListResponse,

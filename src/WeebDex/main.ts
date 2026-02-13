@@ -7,7 +7,7 @@ import { ChapterProvider } from "./implementations/chapter-providing/main";
 import { DiscoverProvider } from "./implementations/discover-section/main";
 import { MangaProvider } from "./implementations/manga/main";
 import { SearchProvider } from "./implementations/search-results/main";
-import { SettingsFormProvider } from "./implementations/settings-form/main";
+import { SettingsFormProvider } from "./implementations/settings-form/forms/main";
 import { applyMixins } from "./implementations/shared/utils";
 import { WeebInterceptor } from "./services/network";
 
