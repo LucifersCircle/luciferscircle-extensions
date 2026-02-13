@@ -81,6 +81,22 @@ export function setDataSaver(value: boolean): void {
 }
 
 // ============================
+// Default Search Sort
+// ============================
+
+export function getDefaultSearchSort(): string {
+    return (
+        (Application.getState("weebdex-default-search-sort") as
+            | string
+            | undefined) ?? "none"
+    );
+}
+
+export function setDefaultSearchSort(value: string): void {
+    Application.setState(value, "weebdex-default-search-sort");
+}
+
+// ============================
 // Settings Form Provider
 // ============================
 

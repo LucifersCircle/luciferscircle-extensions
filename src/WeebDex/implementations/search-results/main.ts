@@ -10,6 +10,7 @@ import { URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import {
+    getDefaultSearchSort,
     getExcludedTags,
     getItemsPerPage,
     getOriginalLanguages,
@@ -126,7 +127,7 @@ export class SearchProvider {
     }
 
     async getSortingOptions(): Promise<SortingOption[]> {
-        return [
+        const options: SortingOption[] = [
             { id: "none", label: "None" },
             { id: "relevance", label: "Relevance" },
             { id: "lastUploadedChapterAt", label: "Latest Updates" },
@@ -137,6 +138,16 @@ export class SearchProvider {
             { id: "title", label: "Title (A-Z)" },
             { id: "year", label: "Year" },
         ];
+
+        const defaultSort = getDefaultSearchSort();
+        if (defaultSort === "none") return options;
+
+        const defaultIndex = options.findIndex((o) => o.id === defaultSort);
+        if (defaultIndex <= 0) return options;
+
+        const [defaultOption] = options.splice(defaultIndex, 1);
+        options.unshift(defaultOption);
+        return options;
     }
 
     async getSearchResults(
@@ -210,7 +221,7 @@ export class SearchProvider {
         }
 
         // Add sorting
-        const sortId = sortingOption?.id || "none";
+        const sortId = sortingOption?.id ?? getDefaultSearchSort();
         if (sortId !== "none") {
             urlBuilder.setQueryItem("sort", sortId);
             urlBuilder.setQueryItem("order", "desc");
