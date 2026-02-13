@@ -1,5 +1,6 @@
 import {
     Form,
+    NavigationRow,
     Section,
     SelectRow,
     ToggleRow,
@@ -25,12 +26,15 @@ import {
 } from "./main";
 import { AVAILABLE_LANGUAGES } from "./models";
 
-export class WeebDexSettingsForm extends Form {
+// ============================
+// Site Settings Form
+// ============================
+
+class SiteSettingsForm extends Form {
     private tags?: WeebDexTagListResponse;
     private tagsLoadError?: Error;
 
     override formWillAppear(): void {
-        // Fetch tags when form loads
         fetchJSON<WeebDexTagListResponse>({
             url: `${WEEBDEX_API_DOMAIN}/manga/tag?limit=100`,
             method: "GET",
@@ -70,7 +74,7 @@ export class WeebDexSettingsForm extends Form {
             minItemCount: 0,
             maxItemCount: AVAILABLE_LANGUAGES.length + 1,
             onValueChange: Application.Selector(
-                this as WeebDexSettingsForm,
+                this as SiteSettingsForm,
                 "handleChapterLanguageChange",
             ),
         };
@@ -91,7 +95,7 @@ export class WeebDexSettingsForm extends Form {
             minItemCount: 0,
             maxItemCount: AVAILABLE_LANGUAGES.length + 1,
             onValueChange: Application.Selector(
-                this as WeebDexSettingsForm,
+                this as SiteSettingsForm,
                 "handleOriginalLanguageChange",
             ),
         };
@@ -110,7 +114,7 @@ export class WeebDexSettingsForm extends Form {
                 minItemCount: 0,
                 maxItemCount: 1,
                 onValueChange: Application.Selector(
-                    this as WeebDexSettingsForm,
+                    this as SiteSettingsForm,
                     "handleTagExclusionChange",
                 ),
             };
@@ -127,7 +131,7 @@ export class WeebDexSettingsForm extends Form {
                 minItemCount: 0,
                 maxItemCount: 1,
                 onValueChange: Application.Selector(
-                    this as WeebDexSettingsForm,
+                    this as SiteSettingsForm,
                     "handleTagExclusionChange",
                 ),
             };
@@ -148,7 +152,7 @@ export class WeebDexSettingsForm extends Form {
             minItemCount: 0,
             maxItemCount: tagOptions.length,
             onValueChange: Application.Selector(
-                this as WeebDexSettingsForm,
+                this as SiteSettingsForm,
                 "handleTagExclusionChange",
             ),
         };
@@ -172,7 +176,7 @@ export class WeebDexSettingsForm extends Form {
             minItemCount: 0,
             maxItemCount: 1,
             onValueChange: Application.Selector(
-                this as WeebDexSettingsForm,
+                this as SiteSettingsForm,
                 "handleItemsPerPageChange",
             ),
         };
@@ -186,7 +190,7 @@ export class WeebDexSettingsForm extends Form {
             subtitle: `Reduce data usage by viewing lower quality versions of chapters.\nAffects:\n- Chapter Images`,
             value: getDataSaver(),
             onValueChange: Application.Selector(
-                this as WeebDexSettingsForm,
+                this as SiteSettingsForm,
                 "handleDataSaverChange",
             ),
         };
@@ -199,7 +203,6 @@ export class WeebDexSettingsForm extends Form {
     async handleChapterLanguageChange(value: string[]): Promise<void> {
         let finalValue = value;
 
-        // If "all" is selected, only keep "all"
         if (value.includes("all") && value.length > 1) {
             const previousValue = getChapterLanguages();
             if (!previousValue.includes("all")) {
@@ -209,7 +212,6 @@ export class WeebDexSettingsForm extends Form {
             }
         }
 
-        // If no selection, default to "all"
         if (finalValue.length === 0) {
             finalValue = ["all"];
         }
@@ -221,7 +223,6 @@ export class WeebDexSettingsForm extends Form {
     async handleOriginalLanguageChange(value: string[]): Promise<void> {
         let finalValue = value;
 
-        // If "all" is selected, only keep "all"
         if (value.includes("all") && value.length > 1) {
             const previousValue = getOriginalLanguages();
             if (!previousValue.includes("all")) {
@@ -231,7 +232,6 @@ export class WeebDexSettingsForm extends Form {
             }
         }
 
-        // If no selection, default to "all"
         if (finalValue.length === 0) {
             finalValue = ["all"];
         }
@@ -254,5 +254,36 @@ export class WeebDexSettingsForm extends Form {
     async handleDataSaverChange(value: boolean): Promise<void> {
         setDataSaver(value);
         this.reloadForm();
+    }
+}
+
+// ============================
+// Search Settings Form
+// ============================
+
+class SearchSettingsForm extends Form {
+    override getSections(): FormSectionElement[] {
+        return [Section("placeholder", [])];
+    }
+}
+
+// ============================
+// Hub Settings Form
+// ============================
+
+export class WeebDexSettingsForm extends Form {
+    override getSections(): FormSectionElement[] {
+        return [
+            Section("mainSettings", [
+                NavigationRow("site_settings", {
+                    title: "Site Settings",
+                    form: new SiteSettingsForm(),
+                }),
+                NavigationRow("search_settings", {
+                    title: "Search Settings",
+                    form: new SearchSettingsForm(),
+                }),
+            ]),
+        ];
     }
 }
