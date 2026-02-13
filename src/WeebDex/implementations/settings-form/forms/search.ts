@@ -2,11 +2,18 @@ import {
     Form,
     Section,
     SelectRow,
+    ToggleRow,
     type FormItemElement,
     type FormSectionElement,
     type SelectRowProps,
+    type ToggleRowProps,
 } from "@paperback/types";
-import { getDefaultSearchSort, setDefaultSearchSort } from "./main";
+import {
+    getDefaultSearchSort,
+    getHideAdultResults,
+    setDefaultSearchSort,
+    setHideAdultResults,
+} from "./main";
 
 const SORT_OPTIONS = [
     { id: "none", title: "None (Default)" },
@@ -30,6 +37,13 @@ export class SearchSettingsForm extends Form {
                 },
                 [this.defaultSortRow()],
             ),
+            Section(
+                {
+                    id: "hide-adult",
+                    footer: "Filters out erotica and pornographic content.",
+                },
+                [this.hideAdultRow()],
+            ),
         ];
     }
 
@@ -51,11 +65,29 @@ export class SearchSettingsForm extends Form {
         return SelectRow("default-search-sort", sortProps);
     }
 
+    hideAdultRow(): FormItemElement<unknown> {
+        const hideAdultProps: ToggleRowProps = {
+            title: "Hide Adult Results",
+            value: getHideAdultResults(),
+            onValueChange: Application.Selector(
+                this as SearchSettingsForm,
+                "handleHideAdultChange",
+            ),
+        };
+
+        return ToggleRow("hide-adult-results", hideAdultProps);
+    }
+
     // Handler methods
 
     async handleDefaultSortChange(value: string[]): Promise<void> {
         const selectedValue = value[0] ?? "none";
         setDefaultSearchSort(selectedValue);
+        this.reloadForm();
+    }
+
+    async handleHideAdultChange(value: boolean): Promise<void> {
+        setHideAdultResults(value);
         this.reloadForm();
     }
 }

@@ -97,6 +97,22 @@ export function setDefaultSearchSort(value: string): void {
 }
 
 // ============================
+// Hide Adult Results
+// ============================
+
+export function getHideAdultResults(): boolean {
+    return (
+        (Application.getState("weebdex-hide-adult-results") as
+            | boolean
+            | undefined) ?? false
+    );
+}
+
+export function setHideAdultResults(value: boolean): void {
+    Application.setState(value, "weebdex-hide-adult-results");
+}
+
+// ============================
 // Settings Form Provider
 // ============================
 

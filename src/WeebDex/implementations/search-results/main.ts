@@ -12,6 +12,7 @@ import { fetchJSON } from "../../services/network";
 import {
     getDefaultSearchSort,
     getExcludedTags,
+    getHideAdultResults,
     getItemsPerPage,
     getOriginalLanguages,
 } from "../settings-form/forms/main";
@@ -72,16 +73,22 @@ export class SearchProvider {
         });
 
         // Content rating filter
+        const contentRatingOptions = [
+            { id: "safe", value: "Safe" },
+            { id: "suggestive", value: "Suggestive" },
+            ...(!getHideAdultResults()
+                ? [
+                      { id: "erotica", value: "Erotica" },
+                      { id: "pornographic", value: "Pornographic" },
+                  ]
+                : []),
+        ];
+
         filters.push({
             type: "multiselect",
             id: "contentRating",
             title: "Content Rating",
-            options: [
-                { id: "safe", value: "Safe" },
-                { id: "suggestive", value: "Suggestive" },
-                { id: "erotica", value: "Erotica" },
-                { id: "pornographic", value: "Pornographic" },
-            ],
+            options: contentRatingOptions,
             value: {},
             allowExclusion: false,
             allowEmptySelection: true,
@@ -183,16 +190,20 @@ export class SearchProvider {
         }
 
         // Apply content rating filter
+        let contentRatings: string[];
         if (filters.contentRating.length > 0) {
-            urlBuilder.setQueryItem("contentRating", filters.contentRating);
+            contentRatings = filters.contentRating;
         } else {
-            // Default content ratings
-            urlBuilder.setQueryItem("contentRating", [
-                "safe",
-                "suggestive",
-                "erotica",
-            ]);
+            contentRatings = ["safe", "suggestive", "erotica"];
         }
+
+        if (getHideAdultResults()) {
+            contentRatings = contentRatings.filter(
+                (r) => r !== "erotica" && r !== "pornographic",
+            );
+        }
+
+        urlBuilder.setQueryItem("contentRating", contentRatings);
 
         // Apply tag filters
         if (filters.includedTags.length > 0) {
