@@ -4,6 +4,8 @@ import {
     Section,
     type FormSectionElement,
 } from "@paperback/types";
+import { ChapterSettingsForm } from "./chapter";
+import { DiscoverSettingsForm } from "./discover";
 import { SearchSettingsForm } from "./search";
 import { SiteSettingsForm } from "./site";
 
@@ -21,11 +23,11 @@ export class WeebDexSettingsForm extends Form {
                 }),
                 NavigationRow("discover_settings", {
                     title: "Discover Settings",
-                    form: new SearchSettingsForm(),
+                    form: new DiscoverSettingsForm(),
                 }),
                 NavigationRow("chapter_settings", {
                     title: "Chapter Settings",
-                    form: new SearchSettingsForm(),
+                    form: new ChapterSettingsForm(),
                 }),
             ]),
         ];
