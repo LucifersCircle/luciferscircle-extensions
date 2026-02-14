@@ -1,12 +1,25 @@
 import {
     Form,
     Section,
+    SelectRow,
     ToggleRow,
     type FormItemElement,
     type FormSectionElement,
+    type SelectRowProps,
     type ToggleRowProps,
 } from "@paperback/types";
-import { getHiddenDiscoverSections, setHiddenDiscoverSections } from "./main";
+import {
+    getDiscoverSubtitle,
+    getHiddenDiscoverSections,
+    setDiscoverSubtitle,
+    setHiddenDiscoverSections,
+} from "./main";
+
+const SUBTITLE_OPTIONS = [
+    { id: "status", title: "Status (Default)" },
+    { id: "year", title: "Year" },
+    { id: "content_rating", title: "Content Rating" },
+];
 
 export class DiscoverSettingsForm extends Form {
     override getSections(): FormSectionElement[] {
@@ -22,6 +35,13 @@ export class DiscoverSettingsForm extends Form {
                     this.topViews30dRow(),
                     this.latestUpdatesRow(),
                 ],
+            ),
+            Section(
+                {
+                    id: "discover-subtitle",
+                    footer: "Information displayed below each title in the top views sections.",
+                },
+                [this.discoverSubtitleRow()],
             ),
         ];
     }
@@ -80,6 +100,22 @@ export class DiscoverSettingsForm extends Form {
         return ToggleRow("toggle-latest-updates", props);
     }
 
+    discoverSubtitleRow(): FormItemElement<unknown> {
+        const subtitleProps: SelectRowProps = {
+            title: "Discover Subtitle",
+            options: SUBTITLE_OPTIONS,
+            value: [getDiscoverSubtitle()],
+            minItemCount: 1,
+            maxItemCount: 1,
+            onValueChange: Application.Selector(
+                this as DiscoverSettingsForm,
+                "handleDiscoverSubtitleChange",
+            ),
+        };
+
+        return SelectRow("discover-subtitle", subtitleProps);
+    }
+
     // Handler methods
 
     private updateHiddenSections(sectionId: string, visible: boolean): void {
@@ -111,5 +147,11 @@ export class DiscoverSettingsForm extends Form {
 
     async handleLatestUpdates(value: boolean): Promise<void> {
         this.updateHiddenSections("latest-updates", value);
+    }
+
+    async handleDiscoverSubtitleChange(value: string[]): Promise<void> {
+        const selectedValue = value[0] ?? "status";
+        setDiscoverSubtitle(selectedValue);
+        this.reloadForm();
     }
 }

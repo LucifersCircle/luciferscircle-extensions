@@ -1,9 +1,12 @@
 import type { DiscoverSectionItem } from "@paperback/types";
 import { WEEBDEX_COVER_DOMAIN } from "../../main";
+import { getDiscoverSubtitle } from "../settings-form/forms/main";
 import type {
     WeebDexChapterFeedResponse,
+    WeebDexManga,
     WeebDexMangaListResponse,
 } from "../shared/models";
+import { capitalize } from "../shared/utils";
 
 export function parseDiscoverItems(
     json: WeebDexMangaListResponse,
@@ -34,9 +37,22 @@ export function parseDiscoverItems(
                 mangaId: mangaId,
                 title: item.title,
                 imageUrl: imageUrl,
-                subtitle: item.status || "",
+                subtitle: buildDiscoverSubtitle(item),
             };
         });
+}
+
+function buildDiscoverSubtitle(item: WeebDexManga): string {
+    const setting = getDiscoverSubtitle();
+
+    switch (setting) {
+        case "year":
+            return item.year?.toString() ?? "";
+        case "content_rating":
+            return capitalize(item.content_rating);
+        default:
+            return capitalize(item.status);
+    }
 }
 
 export function parseLatestUpdates(

@@ -145,6 +145,22 @@ export function setHiddenDiscoverSections(value: string[]): void {
 }
 
 // ============================
+// Discover Subtitle
+// ============================
+
+export function getDiscoverSubtitle(): string {
+    return (
+        (Application.getState("weebdex-discover-subtitle") as
+            | string
+            | undefined) ?? "status"
+    );
+}
+
+export function setDiscoverSubtitle(value: string): void {
+    Application.setState(value, "weebdex-discover-subtitle");
+}
+
+// ============================
 // Settings Form Provider
 // ============================
 
