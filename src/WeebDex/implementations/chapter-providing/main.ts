@@ -47,11 +47,12 @@ export class ChapterProvider {
 
         // Filter by selected language from settings
         const selectedLanguages = getChapterLanguages();
-        let filteredChapters = selectedLanguages.includes("all")
-            ? allChapters
-            : allChapters.filter((ch) =>
-                  selectedLanguages.includes(ch.langCode),
-              );
+        let filteredChapters =
+            selectedLanguages.length === 0
+                ? allChapters
+                : allChapters.filter((ch) =>
+                      selectedLanguages.includes(ch.langCode),
+                  );
 
         // Filter out bonus chapters (decimal chapter numbers)
         if (getHideBonusChapters()) {

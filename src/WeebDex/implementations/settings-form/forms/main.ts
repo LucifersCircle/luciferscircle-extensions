@@ -9,7 +9,7 @@ export function getChapterLanguages(): string[] {
     return (
         (Application.getState("weebdex-chapter-language-filter") as
             | string[]
-            | undefined) ?? ["all"]
+            | undefined) ?? []
     );
 }
 
@@ -25,7 +25,7 @@ export function getOriginalLanguages(): string[] {
     return (
         (Application.getState("weebdex-original-language-filter") as
             | string[]
-            | undefined) ?? ["all"]
+            | undefined) ?? []
     );
 }
 

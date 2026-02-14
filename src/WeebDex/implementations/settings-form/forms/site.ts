@@ -11,7 +11,7 @@ import {
 import { WEEBDEX_API_DOMAIN } from "../../../main";
 import { fetchJSON } from "../../../services/network";
 import { type WeebDexTagListResponse } from "../../shared/models";
-import { AVAILABLE_LANGUAGES } from "../models";
+import { AVAILABLE_LANGUAGES, ITEMS_PER_PAGE_OPTIONS } from "../models";
 import {
     getChapterLanguages,
     getDataSaver,
@@ -97,13 +97,10 @@ export class SiteSettingsForm extends Form {
     chapterLanguageRow(): FormItemElement<unknown> {
         const languageFilterProps: SelectRowProps = {
             title: "Chapter Language Filter",
-            options: [
-                { id: "all", title: "All Languages" },
-                ...AVAILABLE_LANGUAGES,
-            ],
+            options: AVAILABLE_LANGUAGES,
             value: getChapterLanguages(),
             minItemCount: 0,
-            maxItemCount: AVAILABLE_LANGUAGES.length + 1,
+            maxItemCount: AVAILABLE_LANGUAGES.length,
             onValueChange: Application.Selector(
                 this as SiteSettingsForm,
                 "handleChapterLanguageChange",
@@ -116,13 +113,10 @@ export class SiteSettingsForm extends Form {
     originalLanguageRow(): FormItemElement<unknown> {
         const languageFilterProps: SelectRowProps = {
             title: "Original Language Filter",
-            options: [
-                { id: "all", title: "All Languages" },
-                ...AVAILABLE_LANGUAGES,
-            ],
+            options: AVAILABLE_LANGUAGES,
             value: getOriginalLanguages(),
             minItemCount: 0,
-            maxItemCount: AVAILABLE_LANGUAGES.length + 1,
+            maxItemCount: AVAILABLE_LANGUAGES.length,
             onValueChange: Application.Selector(
                 this as SiteSettingsForm,
                 "handleOriginalLanguageChange",
@@ -189,14 +183,7 @@ export class SiteSettingsForm extends Form {
     itemsPerPageRow(): FormItemElement<unknown> {
         const itemsPerPageProps: SelectRowProps = {
             title: "Items Per Page",
-            options: [
-                { id: "28", title: "28" },
-                { id: "42", title: "42 (Default)" },
-                { id: "56", title: "56" },
-                { id: "70", title: "70" },
-                { id: "84", title: "84" },
-                { id: "98", title: "98" },
-            ],
+            options: ITEMS_PER_PAGE_OPTIONS,
             value: [getItemsPerPage()],
             minItemCount: 0,
             maxItemCount: 1,
@@ -225,42 +212,12 @@ export class SiteSettingsForm extends Form {
     // Handler methods
 
     async handleChapterLanguageChange(value: string[]): Promise<void> {
-        let finalValue = value;
-
-        if (value.includes("all") && value.length > 1) {
-            const previousValue = getChapterLanguages();
-            if (!previousValue.includes("all")) {
-                finalValue = ["all"];
-            } else {
-                finalValue = value.filter((v) => v !== "all");
-            }
-        }
-
-        if (finalValue.length === 0) {
-            finalValue = ["all"];
-        }
-
-        setChapterLanguages(finalValue);
+        setChapterLanguages(value);
         this.reloadForm();
     }
 
     async handleOriginalLanguageChange(value: string[]): Promise<void> {
-        let finalValue = value;
-
-        if (value.includes("all") && value.length > 1) {
-            const previousValue = getOriginalLanguages();
-            if (!previousValue.includes("all")) {
-                finalValue = ["all"];
-            } else {
-                finalValue = value.filter((v) => v !== "all");
-            }
-        }
-
-        if (finalValue.length === 0) {
-            finalValue = ["all"];
-        }
-
-        setOriginalLanguages(finalValue);
+        setOriginalLanguages(value);
         this.reloadForm();
     }
 

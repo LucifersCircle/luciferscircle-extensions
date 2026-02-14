@@ -16,6 +16,15 @@ export const SUBTITLE_OPTIONS = [
     { id: "content_rating", title: "Content Rating" },
 ];
 
+export const ITEMS_PER_PAGE_OPTIONS = [
+    { id: "28", title: "28" },
+    { id: "42", title: "42 (Default)" },
+    { id: "56", title: "56" },
+    { id: "70", title: "70" },
+    { id: "84", title: "84" },
+    { id: "98", title: "98" },
+];
+
 export const AVAILABLE_LANGUAGES = [
     { id: "en", title: "English" },
     { id: "ja", title: "Japanese" },

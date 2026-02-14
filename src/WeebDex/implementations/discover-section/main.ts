@@ -129,7 +129,7 @@ export class DiscoverProvider {
 
         // Apply original language filter from settings
         const selectedLanguages = getOriginalLanguages();
-        if (!selectedLanguages.includes("all")) {
+        if (selectedLanguages.length > 0) {
             urlBuilder.setQueryItem("lang", selectedLanguages);
         }
 
