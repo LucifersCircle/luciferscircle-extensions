@@ -1,7 +1,44 @@
-import { Form, Section, type FormSectionElement } from "@paperback/types";
+import {
+    Form,
+    Section,
+    ToggleRow,
+    type FormItemElement,
+    type FormSectionElement,
+    type ToggleRowProps,
+} from "@paperback/types";
+import { getHideBonusChapters, setHideBonusChapters } from "./main";
 
 export class ChapterSettingsForm extends Form {
     override getSections(): FormSectionElement[] {
-        return [Section("placeholder", [])];
+        return [
+            Section(
+                {
+                    id: "bonus-chapters",
+                    footer: "Filter out chapters with decimal numbers (e.g. 1.1, 2.5).",
+                },
+                [this.hideBonusChaptersRow()],
+            ),
+        ];
+    }
+
+    // Row-building methods
+
+    hideBonusChaptersRow(): FormItemElement<unknown> {
+        const props: ToggleRowProps = {
+            title: "Hide Bonus Chapters",
+            value: getHideBonusChapters(),
+            onValueChange: Application.Selector(
+                this as ChapterSettingsForm,
+                "handleHideBonusChapters",
+            ),
+        };
+        return ToggleRow("hide-bonus-chapters", props);
+    }
+
+    // Handler methods
+
+    async handleHideBonusChapters(value: boolean): Promise<void> {
+        setHideBonusChapters(value);
+        this.reloadForm();
     }
 }

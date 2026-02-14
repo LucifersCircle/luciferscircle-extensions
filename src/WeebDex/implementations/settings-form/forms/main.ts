@@ -193,6 +193,22 @@ export function setForceDiscoverSubtitle(value: boolean): void {
 }
 
 // ============================
+// Hide Bonus Chapters
+// ============================
+
+export function getHideBonusChapters(): boolean {
+    return (
+        (Application.getState("weebdex-hide-bonus-chapters") as
+            | boolean
+            | undefined) ?? false
+    );
+}
+
+export function setHideBonusChapters(value: boolean): void {
+    Application.setState(value, "weebdex-hide-bonus-chapters");
+}
+
+// ============================
 // Settings Form Provider
 // ============================
 

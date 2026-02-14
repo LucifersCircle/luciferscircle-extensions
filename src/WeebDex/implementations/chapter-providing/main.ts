@@ -7,7 +7,11 @@ import type {
 import { URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
-import { getChapterLanguages, getDataSaver } from "../settings-form/forms/main";
+import {
+    getChapterLanguages,
+    getDataSaver,
+    getHideBonusChapters,
+} from "../settings-form/forms/main";
 import type {
     WeebDexChapter,
     WeebDexChapterFeedResponse,
@@ -43,11 +47,18 @@ export class ChapterProvider {
 
         // Filter by selected language from settings
         const selectedLanguages = getChapterLanguages();
-        const filteredChapters = selectedLanguages.includes("all")
+        let filteredChapters = selectedLanguages.includes("all")
             ? allChapters
             : allChapters.filter((ch) =>
                   selectedLanguages.includes(ch.langCode),
               );
+
+        // Filter out bonus chapters (decimal chapter numbers)
+        if (getHideBonusChapters()) {
+            filteredChapters = filteredChapters.filter(
+                (ch) => ch.chapNum % 1 === 0,
+            );
+        }
 
         // Update sortingIndex after filtering
         const maxIndex = filteredChapters.length - 1;
