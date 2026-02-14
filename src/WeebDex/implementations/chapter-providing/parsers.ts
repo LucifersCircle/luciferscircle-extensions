@@ -45,12 +45,11 @@ export function parseChapterDetails(
     const node = chapter.node || WEEBDEX_API_DOMAIN;
     const chapterId = chapter.id;
 
-    // Use optimized data if data saver is ON, otherwise use full quality
+    // data saver prioritizes optimized, full quality prioritizes original
     const pageData = dataSaver
         ? chapter.data_optimized || chapter.data || []
         : chapter.data || chapter.data_optimized || [];
 
-    // Build image URLs
     const pages = pageData.map(
         (page) => `${node}/data/${chapterId}/${page.name}`,
     );

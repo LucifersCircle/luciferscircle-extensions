@@ -25,7 +25,6 @@ export class ChapterProvider {
         let currentPage = 1;
         let hasMore = true;
 
-        // Fetch all pages
         while (hasMore) {
             const url = new URL(WEEBDEX_API_DOMAIN)
                 .addPathComponent("manga")
@@ -45,7 +44,6 @@ export class ChapterProvider {
             currentPage++;
         }
 
-        // Filter by selected language from settings
         const selectedLanguages = getChapterLanguages();
         let filteredChapters =
             selectedLanguages.length === 0
@@ -54,14 +52,12 @@ export class ChapterProvider {
                       selectedLanguages.includes(ch.langCode),
                   );
 
-        // Filter out bonus chapters (decimal chapter numbers)
         if (getHideBonusChapters()) {
             filteredChapters = filteredChapters.filter(
                 (ch) => ch.chapNum % 1 === 0,
             );
         }
 
-        // Update sortingIndex after filtering
         const maxIndex = filteredChapters.length - 1;
         filteredChapters.forEach((ch, index) => {
             ch.sortingIndex = maxIndex - index;

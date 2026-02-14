@@ -92,8 +92,6 @@ export class SiteSettingsForm extends Form {
         ];
     }
 
-    // Row-building methods
-
     chapterLanguageRow(): FormItemElement<unknown> {
         const languageFilterProps: SelectRowProps = {
             title: "Chapter Language Filter",
@@ -127,7 +125,6 @@ export class SiteSettingsForm extends Form {
     }
 
     tagExclusionRow(): FormItemElement<unknown> {
-        // If tags haven't loaded yet, show loading state
         if (!this.tags && !this.tagsLoadError) {
             const loadingProps: SelectRowProps = {
                 title: "Tag Exclusion Filter (Loading...)",
@@ -143,7 +140,6 @@ export class SiteSettingsForm extends Form {
             return SelectRow("tag-exclusion-filter", loadingProps);
         }
 
-        // If there was an error loading tags
         if (this.tagsLoadError) {
             const errorProps: SelectRowProps = {
                 title: "Tag Exclusion Filter (Error Loading)",
@@ -159,7 +155,6 @@ export class SiteSettingsForm extends Form {
             return SelectRow("tag-exclusion-filter", errorProps);
         }
 
-        // Build tag options with group labels
         const tagOptions = this.tags!.data.map((tag) => ({
             id: tag.id,
             title: tag.name,
@@ -208,8 +203,6 @@ export class SiteSettingsForm extends Form {
 
         return ToggleRow("data-saver", dataSaverProps);
     }
-
-    // Handler methods
 
     async handleChapterLanguageChange(value: string[]): Promise<void> {
         setChapterLanguages(value);

@@ -7,7 +7,6 @@ export function parseMangaDetails(
     manga: WeebDexManga,
     mangaId: string,
 ): SourceManga {
-    // Build cover URL
     const cover = manga.relationships?.cover;
     let coverUrl = "";
     if (cover?.id && cover?.ext) {
@@ -15,17 +14,14 @@ export function parseMangaDetails(
         coverUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
     }
 
-    // Extract authors
     const authors =
         manga.relationships?.authors?.map((a) => a.name).join(", ") ||
         undefined;
 
-    // Extract artists
     const artists =
         manga.relationships?.artists?.map((a) => a.name).join(", ") ||
         undefined;
 
-    // Extract alternative titles
     const secondaryTitles: string[] = [];
     if (manga.alt_titles) {
         for (const lang in manga.alt_titles) {
@@ -33,7 +29,6 @@ export function parseMangaDetails(
         }
     }
 
-    // Map content rating
     let contentRating = ContentRating.EVERYONE;
     switch (manga.content_rating) {
         case "safe":
@@ -48,10 +43,7 @@ export function parseMangaDetails(
             break;
     }
 
-    // Build tag groups
     const tagGroups = [];
-
-    // Add demographic and status tags
     const infoTags = [];
     if (manga.demographic) {
         infoTags.push({
@@ -75,7 +67,6 @@ export function parseMangaDetails(
         });
     }
 
-    // Add genre/theme tags
     if (manga.relationships?.tags && manga.relationships.tags.length > 0) {
         tagGroups.push({
             id: "tags",

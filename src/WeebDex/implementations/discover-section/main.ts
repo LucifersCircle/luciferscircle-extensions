@@ -58,7 +58,6 @@ export class DiscoverProvider {
         const page = metadata?.page ?? 1;
         const limit = parseInt(getItemsPerPage(), 10);
 
-        // Handle latest updates differently
         if (section.id === "latest-updates") {
             return this.getLatestUpdates(page, limit);
         }
@@ -127,13 +126,11 @@ export class DiscoverProvider {
             .setQueryItem("page", page.toString())
             .setQueryItem("contentRating", contentRatings);
 
-        // Apply original language filter from settings
         const selectedLanguages = getOriginalLanguages();
         if (selectedLanguages.length > 0) {
             urlBuilder.setQueryItem("lang", selectedLanguages);
         }
 
-        // apply excluded tags
         const excludedTags = getExcludedTags();
         if (excludedTags.length > 0) {
             urlBuilder.setQueryItem("tagx", excludedTags);

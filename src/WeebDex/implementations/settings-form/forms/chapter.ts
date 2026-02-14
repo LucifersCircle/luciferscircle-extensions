@@ -21,8 +21,6 @@ export class ChapterSettingsForm extends Form {
         ];
     }
 
-    // Row-building methods
-
     hideBonusChaptersRow(): FormItemElement<unknown> {
         const props: ToggleRowProps = {
             title: "Hide Bonus Chapters",
@@ -34,8 +32,6 @@ export class ChapterSettingsForm extends Form {
         };
         return ToggleRow("hide-bonus-chapters", props);
     }
-
-    // Handler methods
 
     async handleHideBonusChapters(value: boolean): Promise<void> {
         setHideBonusChapters(value);

@@ -96,7 +96,6 @@ export function parseSearchResults(
         .map((item) => {
             const mangaId = item.id;
 
-            // Construct cover URL
             const cover = item.relationships?.cover;
             let imageUrl = "";
             if (cover?.id && cover?.ext) {
@@ -106,7 +105,6 @@ export function parseSearchResults(
                 imageUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
             }
 
-            // Map content rating
             let contentRating = ContentRating.EVERYONE;
             switch (item.content_rating) {
                 case "safe":

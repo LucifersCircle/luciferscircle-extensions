@@ -83,7 +83,6 @@ export function parseLatestUpdates(
                 imageUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
             }
 
-            // Build subtitle
             let subtitle: string;
             if (getForceDiscoverSubtitle()) {
                 subtitle = buildDiscoverSubtitle(manga);

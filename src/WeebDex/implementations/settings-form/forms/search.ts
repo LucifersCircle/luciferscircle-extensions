@@ -45,8 +45,6 @@ export class SearchSettingsForm extends Form {
         ];
     }
 
-    // Row-building methods
-
     defaultSortRow(): FormItemElement<unknown> {
         const sortProps: SelectRowProps = {
             title: "Default Sort",
@@ -91,8 +89,6 @@ export class SearchSettingsForm extends Form {
 
         return SelectRow("search-subtitle", subtitleProps);
     }
-
-    // Handler methods
 
     async handleDefaultSortChange(value: string[]): Promise<void> {
         const selectedValue = value[0] ?? "none";

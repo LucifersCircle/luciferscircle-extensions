@@ -25,7 +25,6 @@ import { extractSearchFilters, parseSearchResults } from "./parsers";
 
 export class SearchProvider {
     async getSearchFilters(): Promise<SearchFilter[]> {
-        // Fetch available tags from API
         const tagsUrl = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("manga")
             .addPathComponent("tag")
@@ -37,7 +36,6 @@ export class SearchProvider {
 
         const filters: SearchFilter[] = [];
 
-        // Status filter
         filters.push({
             type: "multiselect",
             id: "status",
@@ -54,7 +52,6 @@ export class SearchProvider {
             maximum: undefined,
         });
 
-        // Demographic filter
         filters.push({
             type: "multiselect",
             id: "demographic",
@@ -72,7 +69,6 @@ export class SearchProvider {
             maximum: undefined,
         });
 
-        // Content rating filter
         const contentRatingOptions = [
             { id: "safe", value: "Safe" },
             { id: "suggestive", value: "Suggestive" },
@@ -100,7 +96,6 @@ export class SearchProvider {
             (tag) => !excludedTagIds.includes(tag.id),
         );
 
-        // Tags filter
         filters.push({
             type: "multiselect",
             id: "tags",
@@ -115,7 +110,6 @@ export class SearchProvider {
             maximum: undefined,
         });
 
-        // Tag mode filter (dropdown instead of select)
         filters.push({
             type: "multiselect",
             id: "tagMode",
@@ -124,10 +118,10 @@ export class SearchProvider {
                 { id: "AND", value: "AND - Must match ALL selected tags" },
                 { id: "OR", value: "OR - Can match ANY selected tag" },
             ],
-            value: { AND: "included" }, // Default to AND being selected
+            value: { AND: "included" }, // default to AND
             allowExclusion: false,
             allowEmptySelection: false,
-            maximum: 1, // Only allow selecting one at a time
+            maximum: 1,
         });
 
         return filters;
@@ -171,25 +165,20 @@ export class SearchProvider {
             .setQueryItem("limit", limit.toString())
             .setQueryItem("page", page.toString());
 
-        // Add search term if provided
         if (searchTerm) {
             urlBuilder.setQueryItem("title", searchTerm);
         }
 
-        // Extract and apply filters
         const filters = extractSearchFilters(query);
 
-        // Apply status filter
         if (filters.status.length > 0) {
             urlBuilder.setQueryItem("status", filters.status);
         }
 
-        // Apply demographic filter
         if (filters.demographic.length > 0) {
             urlBuilder.setQueryItem("demographic", filters.demographic);
         }
 
-        // Apply content rating filter
         let contentRatings: string[];
         if (filters.contentRating.length > 0) {
             contentRatings = filters.contentRating;
@@ -205,11 +194,10 @@ export class SearchProvider {
 
         urlBuilder.setQueryItem("contentRating", contentRatings);
 
-        // Apply tag filters
         if (filters.includedTags.length > 0) {
             urlBuilder.setQueryItem("tag", filters.includedTags);
         }
-        // Apply tag exclusions from settings (merge with user's excluded tags)
+        // merge settings-excluded tags with user-excluded tags
         const settingsExcludedTags = getExcludedTags();
         if (settingsExcludedTags.length > 0) {
             const allExcludedTags = [
@@ -220,18 +208,15 @@ export class SearchProvider {
             urlBuilder.setQueryItem("tagx", filters.excludedTags);
         }
 
-        // Apply tag mode
         if (filters.tagMode) {
             urlBuilder.setQueryItem("tmod", filters.tagMode);
         }
 
-        // Apply original language filter from settings
         const selectedLanguages = getOriginalLanguages();
         if (selectedLanguages.length > 0) {
             urlBuilder.setQueryItem("lang", selectedLanguages);
         }
 
-        // Add sorting
         const sortId = sortingOption?.id ?? getDefaultSearchSort();
         if (sortId !== "none") {
             urlBuilder.setQueryItem("sort", sortId);

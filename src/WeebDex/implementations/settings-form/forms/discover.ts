@@ -52,8 +52,6 @@ export class DiscoverSettingsForm extends Form {
         ];
     }
 
-    // Row-building methods
-
     private isVisible(sectionId: string): boolean {
         return !getHiddenDiscoverSections().includes(sectionId);
     }
@@ -145,8 +143,6 @@ export class DiscoverSettingsForm extends Form {
         };
         return ToggleRow("toggle-force-discover-subtitle", props);
     }
-
-    // Handler methods
 
     private updateHiddenSections(sectionId: string, visible: boolean): void {
         let hidden = getHiddenDiscoverSections();
