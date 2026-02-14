@@ -1,5 +1,8 @@
-import type { SearchQuery, SearchResultItem } from "@paperback/types";
-import { ContentRating } from "@paperback/types";
+import {
+    ContentRating,
+    type SearchQuery,
+    type SearchResultItem,
+} from "@paperback/types";
 import { WEEBDEX_COVER_DOMAIN } from "../../main";
 import { getSearchSubtitle } from "../settings-form/forms/main";
 import type {

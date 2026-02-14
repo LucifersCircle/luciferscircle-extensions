@@ -1,10 +1,10 @@
-import type {
-    Chapter,
-    ChapterDetails,
-    Request,
-    SourceManga,
+import {
+    URL,
+    type Chapter,
+    type ChapterDetails,
+    type Request,
+    type SourceManga,
 } from "@paperback/types";
-import { URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import {

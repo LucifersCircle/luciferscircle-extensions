@@ -1,10 +1,11 @@
-import type {
-    DiscoverSection,
-    DiscoverSectionItem,
-    PagedResults,
-    Request,
+import {
+    DiscoverSectionType,
+    URL,
+    type DiscoverSection,
+    type DiscoverSectionItem,
+    type PagedResults,
+    type Request,
 } from "@paperback/types";
-import { DiscoverSectionType, URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import {
@@ -14,10 +15,10 @@ import {
     getItemsPerPage,
     getOriginalLanguages,
 } from "../settings-form/forms/main";
-import {
-    type Metadata,
-    type WeebDexChapterFeedResponse,
-    type WeebDexMangaListResponse,
+import type {
+    Metadata,
+    WeebDexChapterFeedResponse,
+    WeebDexMangaListResponse,
 } from "../shared/models";
 import { parseDiscoverItems, parseLatestUpdates } from "./parsers";
 

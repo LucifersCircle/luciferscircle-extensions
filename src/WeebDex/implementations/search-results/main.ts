@@ -1,12 +1,12 @@
-import type {
-    PagedResults,
-    Request,
-    SearchFilter,
-    SearchQuery,
-    SearchResultItem,
-    SortingOption,
+import {
+    URL,
+    type PagedResults,
+    type Request,
+    type SearchFilter,
+    type SearchQuery,
+    type SearchResultItem,
+    type SortingOption,
 } from "@paperback/types";
-import { URL } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import {

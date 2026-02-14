@@ -1,5 +1,4 @@
-import type { Request, SourceManga } from "@paperback/types";
-import { URL } from "@paperback/types";
+import { URL, type Request, type SourceManga } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import type { WeebDexManga } from "../shared/models";

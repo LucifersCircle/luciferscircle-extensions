@@ -1,5 +1,8 @@
-import type { MangaInfo, SourceManga } from "@paperback/types";
-import { ContentRating } from "@paperback/types";
+import {
+    ContentRating,
+    type MangaInfo,
+    type SourceManga,
+} from "@paperback/types";
 import { WEEBDEX_COVER_DOMAIN, WEEBDEX_DOMAIN } from "../../main";
 import type { WeebDexManga } from "../shared/models";
 

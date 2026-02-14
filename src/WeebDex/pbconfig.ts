@@ -1,5 +1,8 @@
-import type { ExtensionInfo } from "@paperback/types";
-import { ContentRating, SourceIntents } from "@paperback/types";
+import {
+    ContentRating,
+    SourceIntents,
+    type ExtensionInfo,
+} from "@paperback/types";
 
 export default {
     name: "WeebDex",

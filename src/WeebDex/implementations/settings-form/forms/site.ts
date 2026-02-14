@@ -10,7 +10,7 @@ import {
 } from "@paperback/types";
 import { WEEBDEX_API_DOMAIN } from "../../../main";
 import { fetchJSON } from "../../../services/network";
-import { type WeebDexTagListResponse } from "../../shared/models";
+import type { WeebDexTagListResponse } from "../../shared/models";
 import { AVAILABLE_LANGUAGES, ITEMS_PER_PAGE_OPTIONS } from "../models";
 import {
     getChapterLanguages,

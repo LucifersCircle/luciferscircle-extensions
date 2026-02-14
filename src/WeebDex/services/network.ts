@@ -1,5 +1,9 @@
-import type { Request, Response } from "@paperback/types";
-import { CloudflareError, PaperbackInterceptor } from "@paperback/types";
+import {
+    CloudflareError,
+    PaperbackInterceptor,
+    type Request,
+    type Response,
+} from "@paperback/types";
 import { WEEBDEX_DOMAIN } from "../main";
 
 export class WeebInterceptor extends PaperbackInterceptor {
