@@ -1,3 +1,21 @@
+export const SORT_OPTIONS = [
+    { id: "none", title: "None (Default)" },
+    { id: "relevance", title: "Relevance" },
+    { id: "lastUploadedChapterAt", title: "Latest Updates" },
+    { id: "createdAt", title: "Recently Added" },
+    { id: "rating", title: "Highest Rated" },
+    { id: "views", title: "Most Popular" },
+    { id: "follows", title: "Most Followed" },
+    { id: "title", title: "Title (A-Z)" },
+    { id: "year", title: "Year" },
+];
+
+export const SUBTITLE_OPTIONS = [
+    { id: "status", title: "Status (Default)" },
+    { id: "year", title: "Year" },
+    { id: "content_rating", title: "Content Rating" },
+];
+
 export const AVAILABLE_LANGUAGES = [
     { id: "en", title: "English" },
     { id: "ja", title: "Japanese" },

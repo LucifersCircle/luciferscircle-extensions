@@ -8,6 +8,7 @@ import {
     type SelectRowProps,
     type ToggleRowProps,
 } from "@paperback/types";
+import { SORT_OPTIONS, SUBTITLE_OPTIONS } from "../models";
 import {
     getDefaultSearchSort,
     getHideAdultResults,
@@ -17,45 +18,27 @@ import {
     setSearchSubtitle,
 } from "./main";
 
-const SORT_OPTIONS = [
-    { id: "none", title: "None (Default)" },
-    { id: "relevance", title: "Relevance" },
-    { id: "lastUploadedChapterAt", title: "Latest Updates" },
-    { id: "createdAt", title: "Recently Added" },
-    { id: "rating", title: "Highest Rated" },
-    { id: "views", title: "Most Popular" },
-    { id: "follows", title: "Most Followed" },
-    { id: "title", title: "Title (A-Z)" },
-    { id: "year", title: "Year" },
-];
-
-const SUBTITLE_OPTIONS = [
-    { id: "status", title: "Status (Default)" },
-    { id: "year", title: "Year" },
-    { id: "content_rating", title: "Content Rating" },
-];
-
 export class SearchSettingsForm extends Form {
     override getSections(): FormSectionElement[] {
         return [
             Section(
                 {
                     id: "default-sort",
-                    footer: "Sort order applied to all search results by default.",
+                    footer: "Sort order applied to all results by default.",
                 },
                 [this.defaultSortRow()],
             ),
             Section(
                 {
                     id: "hide-adult",
-                    footer: "Filters out erotica and pornographic content.",
+                    footer: "Filter out erotica and pornographic content.",
                 },
                 [this.hideAdultRow()],
             ),
             Section(
                 {
                     id: "search-subtitle",
-                    footer: "Information displayed below each search result title.",
+                    footer: "Information displayed below each title.",
                 },
                 [this.searchSubtitleRow()],
             ),
@@ -66,7 +49,7 @@ export class SearchSettingsForm extends Form {
 
     defaultSortRow(): FormItemElement<unknown> {
         const sortProps: SelectRowProps = {
-            title: "Default Search Sort",
+            title: "Default Sort",
             options: SORT_OPTIONS,
             value: [getDefaultSearchSort()],
             minItemCount: 1,
@@ -82,7 +65,7 @@ export class SearchSettingsForm extends Form {
 
     hideAdultRow(): FormItemElement<unknown> {
         const hideAdultProps: ToggleRowProps = {
-            title: "Hide Adult Results",
+            title: "Hide Adult Titles",
             value: getHideAdultResults(),
             onValueChange: Application.Selector(
                 this as SearchSettingsForm,
@@ -95,7 +78,7 @@ export class SearchSettingsForm extends Form {
 
     searchSubtitleRow(): FormItemElement<unknown> {
         const subtitleProps: SelectRowProps = {
-            title: "Search Result Subtitle",
+            title: "Result Subtitle",
             options: SUBTITLE_OPTIONS,
             value: [getSearchSubtitle()],
             minItemCount: 1,

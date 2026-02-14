@@ -8,6 +8,7 @@ import {
     type SelectRowProps,
     type ToggleRowProps,
 } from "@paperback/types";
+import { SUBTITLE_OPTIONS } from "../models";
 import {
     getDiscoverSubtitle,
     getForceDiscoverSubtitle,
@@ -17,19 +18,13 @@ import {
     setHiddenDiscoverSections,
 } from "./main";
 
-const SUBTITLE_OPTIONS = [
-    { id: "status", title: "Status (Default)" },
-    { id: "year", title: "Year" },
-    { id: "content_rating", title: "Content Rating" },
-];
-
 export class DiscoverSettingsForm extends Form {
     override getSections(): FormSectionElement[] {
         return [
             Section(
                 {
                     id: "section-visibility",
-                    footer: "Toggle discover sections on or off.",
+                    footer: "Toggle sections on or off.",
                 },
                 [
                     this.topViews24hRow(),
@@ -41,7 +36,7 @@ export class DiscoverSettingsForm extends Form {
             Section(
                 {
                     id: "discover-subtitle",
-                    footer: "Information displayed below each title in the discover sections.",
+                    footer: "Information displayed below each title.",
                 },
                 [this.discoverSubtitleRow(), this.forceDiscoverSubtitleRow()],
             ),
