@@ -9,6 +9,7 @@ import { WEEBDEX_API_DOMAIN } from "../../main";
 import { fetchJSON } from "../../services/network";
 import {
     getExcludedTags,
+    getHiddenDiscoverSections,
     getItemsPerPage,
     getOriginalLanguages,
 } from "../settings-form/forms/main";
@@ -21,7 +22,9 @@ import { parseDiscoverItems, parseLatestUpdates } from "./parsers";
 
 export class DiscoverProvider {
     async getDiscoverSections(): Promise<DiscoverSection[]> {
-        return [
+        const hidden = getHiddenDiscoverSections();
+
+        const allSections: DiscoverSection[] = [
             {
                 id: "top-views-24h",
                 title: "Top Views (24 Hours)",
@@ -43,6 +46,8 @@ export class DiscoverProvider {
                 type: DiscoverSectionType.chapterUpdates,
             },
         ];
+
+        return allSections.filter((s) => !hidden.includes(s.id));
     }
 
     async getDiscoverSectionItems(

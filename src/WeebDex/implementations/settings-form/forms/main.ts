@@ -129,6 +129,22 @@ export function setSearchSubtitle(value: string): void {
 }
 
 // ============================
+// Hidden Discover Sections
+// ============================
+
+export function getHiddenDiscoverSections(): string[] {
+    return (
+        (Application.getState("weebdex-hidden-discover-sections") as
+            | string[]
+            | undefined) ?? []
+    );
+}
+
+export function setHiddenDiscoverSections(value: string[]): void {
+    Application.setState(value, "weebdex-hidden-discover-sections");
+}
+
+// ============================
 // Settings Form Provider
 // ============================
 
