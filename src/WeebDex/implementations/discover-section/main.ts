@@ -10,6 +10,7 @@ import { fetchJSON } from "../../services/network";
 import {
     getExcludedTags,
     getHiddenDiscoverSections,
+    getHideAdultDiscoverResults,
     getItemsPerPage,
     getOriginalLanguages,
 } from "../settings-form/forms/main";
@@ -62,12 +63,16 @@ export class DiscoverProvider {
             return this.getLatestUpdates(page, limit);
         }
 
+        const contentRatings = getHideAdultDiscoverResults()
+            ? ["safe", "suggestive"]
+            : ["safe", "suggestive", "erotica"];
+
         const urlBuilder = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("manga")
             .addPathComponent("top")
             .setQueryItem("limit", limit.toString())
             .setQueryItem("page", page.toString())
-            .setQueryItem("contentRating", ["safe", "suggestive", "erotica"]);
+            .setQueryItem("contentRating", contentRatings);
 
         switch (section.id) {
             case "top-views-24h":
@@ -111,12 +116,16 @@ export class DiscoverProvider {
         page: number,
         limit: number,
     ): Promise<PagedResults<DiscoverSectionItem>> {
+        const contentRatings = getHideAdultDiscoverResults()
+            ? ["safe", "suggestive"]
+            : ["safe", "suggestive", "erotica"];
+
         const urlBuilder = new URL(WEEBDEX_API_DOMAIN)
             .addPathComponent("chapter")
             .addPathComponent("updates")
             .setQueryItem("limit", limit.toString())
             .setQueryItem("page", page.toString())
-            .setQueryItem("contentRating", ["safe", "suggestive", "erotica"]);
+            .setQueryItem("contentRating", contentRatings);
 
         // Apply original language filter from settings
         const selectedLanguages = getOriginalLanguages();

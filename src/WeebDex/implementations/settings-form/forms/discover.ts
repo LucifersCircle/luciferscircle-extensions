@@ -13,9 +13,11 @@ import {
     getDiscoverSubtitle,
     getForceDiscoverSubtitle,
     getHiddenDiscoverSections,
+    getHideAdultDiscoverResults,
     setDiscoverSubtitle,
     setForceDiscoverSubtitle,
     setHiddenDiscoverSections,
+    setHideAdultDiscoverResults,
 } from "./main";
 
 export class DiscoverSettingsForm extends Form {
@@ -32,6 +34,13 @@ export class DiscoverSettingsForm extends Form {
                     this.topViews30dRow(),
                     this.latestUpdatesRow(),
                 ],
+            ),
+            Section(
+                {
+                    id: "hide-adult",
+                    footer: "Filter out erotica and pornographic content.",
+                },
+                [this.hideAdultRow()],
             ),
             Section(
                 {
@@ -97,6 +106,18 @@ export class DiscoverSettingsForm extends Form {
         return ToggleRow("toggle-latest-updates", props);
     }
 
+    hideAdultRow(): FormItemElement<unknown> {
+        const props: ToggleRowProps = {
+            title: "Hide Adult Results",
+            value: getHideAdultDiscoverResults(),
+            onValueChange: Application.Selector(
+                this as DiscoverSettingsForm,
+                "handleHideAdultChange",
+            ),
+        };
+        return ToggleRow("hide-adult-results", props);
+    }
+
     discoverSubtitleRow(): FormItemElement<unknown> {
         const subtitleProps: SelectRowProps = {
             title: "Discover Subtitle",
@@ -156,6 +177,11 @@ export class DiscoverSettingsForm extends Form {
 
     async handleLatestUpdates(value: boolean): Promise<void> {
         this.updateHiddenSections("latest-updates", value);
+    }
+
+    async handleHideAdultChange(value: boolean): Promise<void> {
+        setHideAdultDiscoverResults(value);
+        this.reloadForm();
     }
 
     async handleDiscoverSubtitleChange(value: string[]): Promise<void> {

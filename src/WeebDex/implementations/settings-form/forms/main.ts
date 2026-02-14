@@ -113,6 +113,22 @@ export function setHideAdultResults(value: boolean): void {
 }
 
 // ============================
+// Hide Adult Discover Results
+// ============================
+
+export function getHideAdultDiscoverResults(): boolean {
+    return (
+        (Application.getState("weebdex-hide-adult-discover-results") as
+            | boolean
+            | undefined) ?? false
+    );
+}
+
+export function setHideAdultDiscoverResults(value: boolean): void {
+    Application.setState(value, "weebdex-hide-adult-discover-results");
+}
+
+// ============================
 // Search Result Subtitle
 // ============================
 
