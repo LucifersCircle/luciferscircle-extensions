@@ -161,6 +161,22 @@ export function setDiscoverSubtitle(value: string): void {
 }
 
 // ============================
+// Force Discover Subtitle
+// ============================
+
+export function getForceDiscoverSubtitle(): boolean {
+    return (
+        (Application.getState("weebdex-force-discover-subtitle") as
+            | boolean
+            | undefined) ?? false
+    );
+}
+
+export function setForceDiscoverSubtitle(value: boolean): void {
+    Application.setState(value, "weebdex-force-discover-subtitle");
+}
+
+// ============================
 // Settings Form Provider
 // ============================
 

@@ -1,6 +1,9 @@
 import type { DiscoverSectionItem } from "@paperback/types";
 import { WEEBDEX_COVER_DOMAIN } from "../../main";
-import { getDiscoverSubtitle } from "../settings-form/forms/main";
+import {
+    getDiscoverSubtitle,
+    getForceDiscoverSubtitle,
+} from "../settings-form/forms/main";
 import type {
     WeebDexChapterFeedResponse,
     WeebDexManga,
@@ -80,12 +83,17 @@ export function parseLatestUpdates(
                 imageUrl = `${WEEBDEX_COVER_DOMAIN}/covers/${mangaId}/${cover.id}.${ext}`;
             }
 
-            // Build chapter subtitle
-            const chapterNum = ch.chapter ? `Ch. ${ch.chapter}` : "";
-            const volumeNum = ch.volume ? `Vol. ${ch.volume}` : "";
-            const subtitle =
-                [volumeNum, chapterNum].filter(Boolean).join(" ") ||
-                "New Chapter";
+            // Build subtitle
+            let subtitle: string;
+            if (getForceDiscoverSubtitle()) {
+                subtitle = buildDiscoverSubtitle(manga);
+            } else {
+                const chapterNum = ch.chapter ? `Ch. ${ch.chapter}` : "";
+                const volumeNum = ch.volume ? `Vol. ${ch.volume}` : "";
+                subtitle =
+                    [volumeNum, chapterNum].filter(Boolean).join(" ") ||
+                    "New Chapter";
+            }
 
             return {
                 type: "chapterUpdatesCarouselItem" as const,

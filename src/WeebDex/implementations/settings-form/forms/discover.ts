@@ -10,8 +10,10 @@ import {
 } from "@paperback/types";
 import {
     getDiscoverSubtitle,
+    getForceDiscoverSubtitle,
     getHiddenDiscoverSections,
     setDiscoverSubtitle,
+    setForceDiscoverSubtitle,
     setHiddenDiscoverSections,
 } from "./main";
 
@@ -39,9 +41,9 @@ export class DiscoverSettingsForm extends Form {
             Section(
                 {
                     id: "discover-subtitle",
-                    footer: "Information displayed below each title in the top views sections.",
+                    footer: "Information displayed below each title in the discover sections.",
                 },
-                [this.discoverSubtitleRow()],
+                [this.discoverSubtitleRow(), this.forceDiscoverSubtitleRow()],
             ),
         ];
     }
@@ -116,6 +118,18 @@ export class DiscoverSettingsForm extends Form {
         return SelectRow("discover-subtitle", subtitleProps);
     }
 
+    forceDiscoverSubtitleRow(): FormItemElement<unknown> {
+        const props: ToggleRowProps = {
+            title: "Apply to Latest Updates",
+            value: getForceDiscoverSubtitle(),
+            onValueChange: Application.Selector(
+                this as DiscoverSettingsForm,
+                "handleForceDiscoverSubtitle",
+            ),
+        };
+        return ToggleRow("toggle-force-discover-subtitle", props);
+    }
+
     // Handler methods
 
     private updateHiddenSections(sectionId: string, visible: boolean): void {
@@ -152,6 +166,11 @@ export class DiscoverSettingsForm extends Form {
     async handleDiscoverSubtitleChange(value: string[]): Promise<void> {
         const selectedValue = value[0] ?? "status";
         setDiscoverSubtitle(selectedValue);
+        this.reloadForm();
+    }
+
+    async handleForceDiscoverSubtitle(value: boolean): Promise<void> {
+        setForceDiscoverSubtitle(value);
         this.reloadForm();
     }
 }
