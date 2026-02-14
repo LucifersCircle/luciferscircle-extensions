@@ -1,10 +1,13 @@
 import type { SearchQuery, SearchResultItem } from "@paperback/types";
 import { ContentRating } from "@paperback/types";
 import { WEEBDEX_COVER_DOMAIN } from "../../main";
+import { getSearchSubtitle } from "../settings-form/forms/main";
 import type {
     ExtractedFilters,
+    WeebDexManga,
     WeebDexMangaListResponse,
 } from "../shared/models";
+import { capitalize } from "../shared/utils";
 
 export function extractSearchFilters(query: SearchQuery): ExtractedFilters {
     const status: string[] = [];
@@ -122,8 +125,21 @@ export function parseSearchResults(
                 mangaId: mangaId,
                 title: item.title,
                 imageUrl: imageUrl,
-                subtitle: item.status || "",
+                subtitle: buildSubtitle(item),
                 contentRating: contentRating,
             };
         });
+}
+
+function buildSubtitle(item: WeebDexManga): string {
+    const setting = getSearchSubtitle();
+
+    switch (setting) {
+        case "year":
+            return item.year?.toString() ?? "";
+        case "content_rating":
+            return capitalize(item.content_rating);
+        default:
+            return capitalize(item.status);
+    }
 }

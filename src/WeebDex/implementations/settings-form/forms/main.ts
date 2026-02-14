@@ -113,6 +113,22 @@ export function setHideAdultResults(value: boolean): void {
 }
 
 // ============================
+// Search Result Subtitle
+// ============================
+
+export function getSearchSubtitle(): string {
+    return (
+        (Application.getState("weebdex-search-subtitle") as
+            | string
+            | undefined) ?? "status"
+    );
+}
+
+export function setSearchSubtitle(value: string): void {
+    Application.setState(value, "weebdex-search-subtitle");
+}
+
+// ============================
 // Settings Form Provider
 // ============================
 
